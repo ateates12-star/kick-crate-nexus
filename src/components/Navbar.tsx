@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Search, ShoppingCart, User, Moon, Sun, Menu, X, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { useTheme } from "next-themes";
 import {
   Sheet,
@@ -12,11 +13,16 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import NotificationBell from "./NotificationBell";
+import { useCart } from "@/hooks/useCart";
+import { useFavorites } from "@/hooks/useFavorites";
 
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const { items: cartItems } = useCart();
+  const { items: favoriteItems } = useFavorites();
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -57,45 +63,37 @@ const Navbar = () => {
               )}
             </Button>
 
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative">
-                  <ShoppingCart className="h-5 w-5" />
-                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    0
-                  </span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent>
-                <SheetHeader>
-                  <SheetTitle>Sepetim</SheetTitle>
-                </SheetHeader>
-                <Tabs defaultValue="cart" className="mt-4">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="cart">
-                      <ShoppingCart className="h-4 w-4 mr-2" />
-                      Sepet
-                    </TabsTrigger>
-                    <TabsTrigger value="favorites">
-                      <Heart className="h-4 w-4 mr-2" />
-                      Favoriler
-                    </TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="cart" className="mt-4">
-                    <div className="text-center py-8 text-muted-foreground">
-                      Sepetiniz boş
-                    </div>
-                  </TabsContent>
-                  <TabsContent value="favorites" className="mt-4">
-                    <div className="text-center py-8 text-muted-foreground">
-                      Favori ürününüz yok
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </SheetContent>
-            </Sheet>
+            <NotificationBell />
 
-            <Link to="/auth">
+            <Link to="/cart">
+              <Button variant="ghost" size="icon" className="relative">
+                <ShoppingCart className="h-5 w-5" />
+                {cartItems.length > 0 && (
+                  <Badge
+                    variant="destructive"
+                    className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                  >
+                    {cartItems.length}
+                  </Badge>
+                )}
+              </Button>
+            </Link>
+
+            <Link to="/favorites">
+              <Button variant="ghost" size="icon" className="relative">
+                <Heart className="h-5 w-5" />
+                {favoriteItems.length > 0 && (
+                  <Badge
+                    variant="destructive"
+                    className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                  >
+                    {favoriteItems.length}
+                  </Badge>
+                )}
+              </Button>
+            </Link>
+
+            <Link to="/profile">
               <Button variant="ghost" size="icon">
                 <User className="h-5 w-5" />
               </Button>

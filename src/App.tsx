@@ -7,6 +7,13 @@ import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import ProductDetail from "./pages/ProductDetail";
+import Profile from "./pages/Profile";
+import Cart from "./pages/Cart";
+import Favorites from "./pages/Favorites";
+import Notifications from "./pages/Notifications";
+import Admin from "./pages/Admin";
+import Reviews from "./pages/admin/Reviews";
+import SendNotification from "./pages/admin/SendNotification";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +29,13 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/reviews" element={<Reviews />} />
+            <Route path="/admin/notifications" element={<SendNotification />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
