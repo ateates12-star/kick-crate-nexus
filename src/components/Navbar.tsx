@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Search, ShoppingCart, User, Moon, Sun, Menu, X, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,9 +28,13 @@ interface NavbarProps {
 
 const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
   const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [siteLogo, setSiteLogo] = useState<string | null>(null);
   const [cartSheetOpen, setCartSheetOpen] = useState(false);
+  const [localSearchQuery, setLocalSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
   const { items: cartItems, removeItem, updateQuantity } = useCart();
   const { items: favoriteItems, removeFromFavorites } = useFavorites();
   const { isAdmin } = useAdmin();
@@ -56,6 +60,40 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
 
     fetchSiteLogo();
   }, []);
+
+  useEffect(() => {
+    const searchProducts = async () => {
+      if (localSearchQuery.trim().length < 2) {
+        setSearchResults([]);
+        setShowSearchResults(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("products")
+        .select(`
+          *,
+          brands(name),
+          product_images(image_url, is_primary)
+        `)
+        .or(`name.ilike.%${localSearchQuery}%,brands.name.ilike.%${localSearchQuery}%`)
+        .limit(5);
+
+      if (!error && data) {
+        setSearchResults(data);
+        setShowSearchResults(true);
+      }
+    };
+
+    const debounceTimer = setTimeout(searchProducts, 300);
+    return () => clearTimeout(debounceTimer);
+  }, [localSearchQuery]);
+
+  const handleSearchResultClick = (productId: string) => {
+    setShowSearchResults(false);
+    setLocalSearchQuery("");
+    navigate(`/product/${productId}`);
+  };
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -89,9 +127,41 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                 type="search"
                 placeholder="Marka, model veya numara ara..."
                 className="pl-10"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery?.(e.target.value)}
+                value={localSearchQuery}
+                onChange={(e) => setLocalSearchQuery(e.target.value)}
+                onFocus={() => localSearchQuery.length >= 2 && setShowSearchResults(true)}
+                onBlur={() => setTimeout(() => setShowSearchResults(false), 200)}
               />
+              {showSearchResults && searchResults.length > 0 && (
+                <div className="absolute top-full mt-2 w-full bg-card border border-border rounded-lg shadow-lg max-h-96 overflow-y-auto z-50">
+                  {searchResults.map((product) => (
+                    <div
+                      key={product.id}
+                      className="flex items-center gap-3 p-3 hover:bg-muted cursor-pointer transition-colors border-b border-border last:border-0"
+                      onClick={() => handleSearchResultClick(product.id)}
+                    >
+                      <img
+                        src={
+                          product.product_images?.find((img: any) => img.is_primary)?.image_url ||
+                          product.product_images?.[0]?.image_url ||
+                          "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
+                        }
+                        alt={product.name}
+                        className="w-16 h-16 object-cover rounded"
+                      />
+                      <div className="flex-1">
+                        <p className="font-semibold">{product.name}</p>
+                        {product.brands && (
+                          <p className="text-sm text-muted-foreground">{product.brands.name}</p>
+                        )}
+                        <p className="text-sm font-bold text-primary">
+                          ₺{product.price.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -322,9 +392,44 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                   type="search"
                   placeholder="Ara..."
                   className="pl-10"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery?.(e.target.value)}
+                  value={localSearchQuery}
+                  onChange={(e) => setLocalSearchQuery(e.target.value)}
+                  onFocus={() => localSearchQuery.length >= 2 && setShowSearchResults(true)}
+                  onBlur={() => setTimeout(() => setShowSearchResults(false), 200)}
                 />
+                {showSearchResults && searchResults.length > 0 && (
+                  <div className="absolute top-full mt-2 w-full bg-card border border-border rounded-lg shadow-lg max-h-96 overflow-y-auto z-50">
+                    {searchResults.map((product) => (
+                      <div
+                        key={product.id}
+                        className="flex items-center gap-3 p-3 hover:bg-muted cursor-pointer transition-colors border-b border-border last:border-0"
+                        onClick={() => {
+                          handleSearchResultClick(product.id);
+                          setIsMenuOpen(false);
+                        }}
+                      >
+                        <img
+                          src={
+                            product.product_images?.find((img: any) => img.is_primary)?.image_url ||
+                            product.product_images?.[0]?.image_url ||
+                            "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
+                          }
+                          alt={product.name}
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                        <div className="flex-1">
+                          <p className="font-semibold">{product.name}</p>
+                          {product.brands && (
+                            <p className="text-sm text-muted-foreground">{product.brands.name}</p>
+                          )}
+                          <p className="text-sm font-bold text-primary">
+                            ₺{product.price.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               <div className="flex items-center justify-around pt-2">
                 <Button
