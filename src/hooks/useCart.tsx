@@ -114,6 +114,8 @@ export const useCart = () => {
         if (error) throw error;
       }
 
+      await fetchCart();
+
       toast({
         title: "Sepete Eklendi!",
         description: "Ürün sepetinize eklendi.",
@@ -136,6 +138,8 @@ export const useCart = () => {
         .eq("id", itemId);
 
       if (error) throw error;
+
+      await fetchCart();
     } catch (error) {
       console.error("Error updating quantity:", error);
       toast({
@@ -154,6 +158,8 @@ export const useCart = () => {
         .eq("id", itemId);
 
       if (error) throw error;
+
+      await fetchCart();
 
       toast({
         title: "Silindi",

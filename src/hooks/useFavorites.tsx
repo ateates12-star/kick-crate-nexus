@@ -108,6 +108,8 @@ export const useFavorites = () => {
 
       if (error) throw error;
 
+      await fetchFavorites();
+
       toast({
         title: "Favorilere Eklendi!",
         description: "Ürün favorilerinize eklendi.",
@@ -130,6 +132,8 @@ export const useFavorites = () => {
         .eq("id", favoriteId);
 
       if (error) throw error;
+
+      await fetchFavorites();
 
       toast({
         title: "Silindi",
