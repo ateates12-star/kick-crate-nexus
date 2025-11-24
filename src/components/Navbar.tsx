@@ -57,6 +57,9 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [user, setUser] = useState<any>(null);
+  const [captchaQuestion, setCaptchaQuestion] = useState("");
+  const [captchaAnswer, setCaptchaAnswer] = useState<number | null>(null);
+  const [captchaInput, setCaptchaInput] = useState("");
 
   useEffect(() => {
     const checkUser = async () => {
@@ -71,6 +74,16 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (authOpen) {
+      const a = Math.floor(Math.random() * 9) + 1;
+      const b = Math.floor(Math.random() * 9) + 1;
+      setCaptchaQuestion(`${a} + ${b} = ?`);
+      setCaptchaAnswer(a + b);
+      setCaptchaInput("");
+    }
+  }, [authOpen]);
 
   useEffect(() => {
     if (cartSheetOpen && cartItems.length === 0 && favoriteItems.length === 0) {
@@ -127,12 +140,35 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
     setIsAuthLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: signInEmail,
         password: signInPassword,
       });
 
       if (error) throw error;
+
+      if (data.user) {
+        const { data: roleData, error: roleError } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", data.user.id)
+          .maybeSingle();
+
+        if (roleError) {
+          console.error("Role check error (navbar):", roleError);
+        }
+
+        if (roleData?.role === "banned") {
+          await supabase.auth.signOut();
+          toast({
+            title: "Hesabınız yasaklandı",
+            description: "Lütfen müşteri hizmetleri ile iletişime geçin.",
+            variant: "destructive",
+          });
+          setIsAuthLoading(false);
+          return;
+        }
+      }
 
       toast({
         title: "Giriş başarılı!",
@@ -155,6 +191,20 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
     setIsAuthLoading(true);
 
     try {
+      if (
+        !captchaInput ||
+        captchaAnswer === null ||
+        parseInt(captchaInput, 10) !== captchaAnswer
+      ) {
+        toast({
+          title: "Güvenlik doğrulaması hatalı",
+          description: "Lütfen doğrulama sorusunu doğru yanıtlayın.",
+          variant: "destructive",
+        });
+        setIsAuthLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email: signUpEmail,
         password: signUpPassword,
@@ -169,7 +219,6 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
 
       if (error) throw error;
 
-      // Check if user is auto-confirmed (when auto-confirm is enabled)
       if (data.user && data.session) {
         toast({
           title: "Kayıt başarılı!",
@@ -696,7 +745,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
       </div>
 
       <Dialog open={authOpen} onOpenChange={setAuthOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="w-[95vw] max-w-sm sm:max-w-md sm:w-full p-6 sm:p-8">
           <DialogHeader>
             <div className="flex justify-center mb-4">
               {siteLogo ? (
@@ -765,7 +814,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
 
             <TabsContent value="signup" className="pt-4">
               <form onSubmit={handleSignUp} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium" htmlFor="navbar-first-name">
                       Adınız
@@ -818,6 +867,22 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                     onChange={(e) => setSignUpPassword(e.target.value)}
                     required
                     minLength={6}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    Güvenlik Doğrulaması
+                  </label>
+                  <p className="text-xs text-muted-foreground">
+                    Lütfen şu soruyu yanıtlayın: {" "}
+                    <span className="font-semibold">{captchaQuestion}</span>
+                  </p>
+                  <Input
+                    type="text"
+                    placeholder="Cevabınızı yazın"
+                    value={captchaInput}
+                    onChange={(e) => setCaptchaInput(e.target.value)}
+                    required
                   />
                 </div>
                 <Button
