@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { useToast } from "@/hooks/use-toast";
 
 interface Product {
   id: string;
@@ -39,11 +40,38 @@ const Index = () => {
   const [priceRange, setPriceRange] = useState<number[]>([0, 10000]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchBrands();
     fetchProducts();
+    checkNotifications();
   }, []);
+
+  const checkNotifications = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { count, error } = await supabase
+        .from("notifications")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("is_read", false);
+
+      if (error) throw error;
+
+      if (count && count > 0) {
+        toast({
+          title: "Bildirimleriniz var!",
+          description: `${count} okunmamış bildiriminiz bulunuyor.`,
+          duration: 5000,
+        });
+      }
+    } catch (error) {
+      console.error("Error checking notifications:", error);
+    }
+  };
 
   const fetchBrands = async () => {
     try {

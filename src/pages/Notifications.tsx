@@ -5,7 +5,8 @@ import Navbar from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Bell, CheckCheck } from "lucide-react";
+import { Bell, CheckCheck, Instagram } from "lucide-react";
+import { XIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -28,11 +29,13 @@ const Notifications = () => {
   const [loading, setLoading] = useState(true);
   const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [siteLogo, setSiteLogo] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
     fetchNotifications();
+    fetchSiteLogo();
 
     const channel = supabase
       .channel("notifications_user")
@@ -53,6 +56,22 @@ const Notifications = () => {
       supabase.removeChannel(channel);
     };
   }, []);
+
+  const fetchSiteLogo = async () => {
+    try {
+      const { data } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "site_logo")
+        .maybeSingle();
+
+      if (data?.value) {
+        setSiteLogo(data.value);
+      }
+    } catch (error) {
+      console.error("Error fetching logo:", error);
+    }
+  };
 
   const fetchNotifications = async () => {
     try {
@@ -167,6 +186,32 @@ const Notifications = () => {
     <div className="min-h-screen bg-gradient-subtle">
       <Navbar />
       <main className="container mx-auto px-4 py-8 max-w-3xl">
+        {/* Logo and Social Section */}
+        <div className="flex flex-col items-center mb-8">
+          {siteLogo && (
+            <img src={siteLogo} alt="Logo" className="h-16 mb-4 object-contain" />
+          )}
+          <p className="text-lg font-semibold mb-3">Bizi Takip Edin</p>
+          <div className="flex gap-4">
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 hover:opacity-80 transition-opacity"
+            >
+              <Instagram className="h-6 w-6 text-white" />
+            </a>
+            <a
+              href="https://x.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-full bg-black hover:bg-gray-800 transition-colors"
+            >
+              <XIcon className="h-6 w-6 text-white" />
+            </a>
+          </div>
+        </div>
+
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Bildirimler</h1>
           {notifications.some(n => !n.is_read) && (
