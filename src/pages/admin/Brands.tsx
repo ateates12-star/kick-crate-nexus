@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Upload, X } from "lucide-react";
 
 interface Brand {
   id: string;
@@ -30,6 +30,8 @@ const Brands = () => {
     name: "",
     logo_url: "",
   });
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -61,9 +63,28 @@ const Brands = () => {
     e.preventDefault();
 
     try {
+      let finalLogoUrl = formData.logo_url;
+
+      // Handle logo upload
+      if (logoFile) {
+        const fileExt = logoFile.name.split('.').pop();
+        const fileName = `${Date.now()}-${formData.name.replace(/\s+/g, '-')}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage
+          .from('brand-logos')
+          .upload(fileName, logoFile);
+
+        if (uploadError) throw uploadError;
+
+        const { data: urlData } = supabase.storage
+          .from('brand-logos')
+          .getPublicUrl(fileName);
+
+        finalLogoUrl = urlData.publicUrl;
+      }
+
       const brandData = {
         name: formData.name,
-        logo_url: formData.logo_url || null,
+        logo_url: finalLogoUrl || null,
       };
 
       if (editingBrand) {
@@ -92,6 +113,25 @@ const Brands = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleLogoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setLogoFile(file);
+      setFormData({ ...formData, logo_url: "" });
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const clearLogo = () => {
+    setLogoFile(null);
+    setFormData({ ...formData, logo_url: "" });
+    setLogoPreview(null);
   };
 
   const handleDelete = async (id: string) => {
@@ -132,6 +172,7 @@ const Brands = () => {
       name: "",
       logo_url: "",
     });
+    clearLogo();
   };
 
   if (loading) {
@@ -171,14 +212,59 @@ const Brands = () => {
                 />
               </div>
               <div>
-                <Label>Logo URL (Opsiyonel)</Label>
-                <Input
-                  type="url"
-                  value={formData.logo_url}
-                  onChange={(e) =>
-                    setFormData({ ...formData, logo_url: e.target.value })
-                  }
-                />
+                <Label>Logo</Label>
+                <div className="space-y-4 mt-2">
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                      <Label className="text-sm text-muted-foreground">Logo URL</Label>
+                      <Input
+                        type="url"
+                        value={formData.logo_url}
+                        onChange={(e) => {
+                          setFormData({ ...formData, logo_url: e.target.value });
+                          setLogoFile(null);
+                          setLogoPreview(null);
+                        }}
+                        placeholder="https://example.com/logo.png"
+                        disabled={!!logoFile}
+                      />
+                    </div>
+                    <div className="flex items-end">
+                      <Label
+                        htmlFor="brand-logo-upload"
+                        className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+                      >
+                        <Upload className="h-4 w-4 mr-2" />
+                        Yükle
+                      </Label>
+                      <input
+                        id="brand-logo-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleLogoFileChange}
+                      />
+                    </div>
+                  </div>
+                  {(logoPreview || formData.logo_url) && (
+                    <div className="relative inline-block">
+                      <img
+                        src={logoPreview || formData.logo_url}
+                        alt="Logo önizleme"
+                        className="h-20 w-20 object-contain rounded-lg bg-muted p-2"
+                      />
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="destructive"
+                        className="absolute -top-2 -right-2"
+                        onClick={clearLogo}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="flex gap-2">
                 <Button type="submit" className="flex-1">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search, ShoppingCart, User, Moon, Sun, Menu, X, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,14 +18,32 @@ import { useCart } from "@/hooks/useCart";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useAdmin } from "@/hooks/useAdmin";
 import { Shield } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [siteLogo, setSiteLogo] = useState<string | null>(null);
   const { items: cartItems } = useCart();
   const { items: favoriteItems } = useFavorites();
   const { isAdmin } = useAdmin();
+
+  useEffect(() => {
+    const fetchSiteLogo = async () => {
+      const { data } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "site_logo")
+        .maybeSingle();
+
+      if (data?.value) {
+        setSiteLogo(data.value);
+      }
+    };
+
+    fetchSiteLogo();
+  }, []);
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -33,9 +51,13 @@ const Navbar = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="text-2xl font-bold gradient-hero bg-clip-text text-transparent">
-              KICKZ
-            </div>
+            {siteLogo ? (
+              <img src={siteLogo} alt="Logo" className="h-8 object-contain" />
+            ) : (
+              <div className="text-2xl font-bold gradient-hero bg-clip-text text-transparent">
+                KICKZ
+              </div>
+            )}
           </Link>
 
           {/* Search Bar - Desktop */}

@@ -12,12 +12,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Trash2, Mail } from "lucide-react";
 
 interface User {
   id: string;
   first_name: string | null;
   last_name: string | null;
   created_at: string;
+  last_active_at: string | null;
 }
 
 interface UserRole {
@@ -30,6 +40,9 @@ const Users = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [roles, setRoles] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [newEmail, setNewEmail] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -90,6 +103,65 @@ const Users = () => {
     }
   };
 
+  const handleDeleteUser = async (userId: string) => {
+    if (!confirm("Bu kullanıcıyı silmek istediğinizden emin misiniz?")) return;
+
+    try {
+      const { error } = await supabase.functions.invoke('delete-user', {
+        body: { userId },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Başarılı",
+        description: "Kullanıcı silindi.",
+      });
+
+      fetchUsers();
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        title: "Hata",
+        description: "Kullanıcı silinemedi.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const openEmailDialog = (user: User) => {
+    setSelectedUser(user);
+    setNewEmail("");
+    setEmailDialogOpen(true);
+  };
+
+  const handleUpdateEmail = async () => {
+    if (!selectedUser || !newEmail) return;
+
+    try {
+      const { error } = await supabase.functions.invoke('update-user-email', {
+        body: { userId: selectedUser.id, email: newEmail },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Başarılı",
+        description: "E-posta adresi güncellendi.",
+      });
+
+      setEmailDialogOpen(false);
+      fetchUsers();
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        title: "Hata",
+        description: "E-posta güncellenemedi.",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (loading) {
     return (
       <AdminLayout>
@@ -123,8 +195,13 @@ const Users = () => {
                     <p className="text-sm text-muted-foreground">
                       Kayıt: {new Date(user.created_at).toLocaleDateString("tr-TR")}
                     </p>
+                    {user.last_active_at && (
+                      <p className="text-sm text-muted-foreground">
+                        Son Aktif: {new Date(user.last_active_at).toLocaleDateString("tr-TR")}
+                      </p>
+                    )}
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
                     <Badge variant={roles[user.id] === "admin" ? "default" : "secondary"}>
                       {roles[user.id] === "admin" ? "Admin" : "Kullanıcı"}
                     </Badge>
@@ -140,6 +217,20 @@ const Users = () => {
                         <SelectItem value="admin">Admin</SelectItem>
                       </SelectContent>
                     </Select>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => openEmailDialog(user)}
+                    >
+                      <Mail className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => handleDeleteUser(user.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               </CardContent>
@@ -147,6 +238,36 @@ const Users = () => {
           ))
         )}
       </div>
+
+      <Dialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>E-posta Adresini Değiştir</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Yeni E-posta Adresi</Label>
+              <Input
+                type="email"
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+                placeholder="yeni@email.com"
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={handleUpdateEmail} className="flex-1">
+                Güncelle
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setEmailDialogOpen(false)}
+              >
+                İptal
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   );
 };
