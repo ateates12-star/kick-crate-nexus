@@ -5,8 +5,12 @@ import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Heart, ShoppingCart, Star, ChevronLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useCart } from "@/hooks/useCart";
+import { useFavorites } from "@/hooks/useFavorites";
 
 interface Product {
   id: string;
@@ -27,21 +31,41 @@ interface ProductSize {
   stock: number;
 }
 
+interface Review {
+  id: string;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+  user_id: string;
+}
+
 const ProductDetail = () => {
   const { id } = useParams();
   const { toast } = useToast();
+  const { addToCart } = useCart();
+  const { addToFavorites, isFavorite } = useFavorites();
   const [product, setProduct] = useState<Product | null>(null);
   const [sizes, setSizes] = useState<ProductSize[]>([]);
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [newReview, setNewReview] = useState({ rating: 5, comment: "" });
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
+    checkUser();
     if (id) {
       fetchProduct();
       fetchSizes();
+      fetchReviews();
     }
   }, [id]);
+
+  const checkUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setUser(user);
+  };
 
   const fetchProduct = async () => {
     try {
@@ -81,6 +105,67 @@ const ProductDetail = () => {
       setSizes(data || []);
     } catch (error) {
       console.error("Error fetching sizes:", error);
+    }
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("reviews")
+        .select("*")
+        .eq("product_id", id)
+        .eq("is_approved", true)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setReviews(data || []);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  };
+
+  const submitReview = async () => {
+    if (!user) {
+      toast({
+        title: "Giriş Yapın",
+        description: "Yorum yapmak için giriş yapmalısınız.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!newReview.comment.trim()) {
+      toast({
+        title: "Hata",
+        description: "Lütfen bir yorum yazın.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase.from("reviews").insert({
+        product_id: id,
+        user_id: user.id,
+        rating: newReview.rating,
+        comment: newReview.comment,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Başarılı",
+        description: "Yorumunuz admin onayından sonra yayınlanacaktır.",
+      });
+
+      setNewReview({ rating: 5, comment: "" });
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      toast({
+        title: "Hata",
+        description: "Yorum gönderilemedi.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -225,10 +310,9 @@ const ProductDetail = () => {
                 className="w-full gradient-hero border-0"
                 disabled={!selectedSize}
                 onClick={() => {
-                  toast({
-                    title: "Sepete eklendi!",
-                    description: `${product.name} - Numara: ${selectedSize}`,
-                  });
+                  if (selectedSize && id) {
+                    addToCart(id, selectedSize);
+                  }
                 }}
               >
                 <ShoppingCart className="mr-2 h-5 w-5" />
@@ -239,14 +323,14 @@ const ProductDetail = () => {
                 variant="outline"
                 className="w-full"
                 onClick={() => {
-                  toast({
-                    title: "Favorilere eklendi!",
-                    description: product.name,
-                  });
+                  if (id) {
+                    addToFavorites(id);
+                  }
                 }}
+                disabled={id ? isFavorite(id) : false}
               >
-                <Heart className="mr-2 h-5 w-5" />
-                Favorilere Ekle
+                <Heart className={`mr-2 h-5 w-5 ${id && isFavorite(id) ? "fill-current" : ""}`} />
+                {id && isFavorite(id) ? "Favorilerde" : "Favorilere Ekle"}
               </Button>
             </div>
 
@@ -261,16 +345,90 @@ const ProductDetail = () => {
           </div>
         </div>
 
-        {/* Reviews Section (Placeholder) */}
+        {/* Reviews Section */}
         <section className="mt-16">
           <h2 className="text-2xl font-bold mb-6">Yorumlar</h2>
-          <Card>
-            <CardContent className="pt-6">
-              <p className="text-center text-muted-foreground py-8">
-                Henüz yorum yapılmamış. İlk yorumu siz yapın!
-              </p>
-            </CardContent>
-          </Card>
+
+          {/* Submit Review */}
+          {user && (
+            <Card className="mb-6">
+              <CardContent className="pt-6 space-y-4">
+                <h3 className="font-semibold">Yorum Yap</h3>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">
+                    Değerlendirme
+                  </label>
+                  <div className="flex gap-1">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() =>
+                          setNewReview({ ...newReview, rating: i + 1 })
+                        }
+                      >
+                        <Star
+                          className={`h-6 w-6 ${
+                            i < newReview.rating
+                              ? "fill-primary text-primary"
+                              : "text-muted-foreground"
+                          }`}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Yorum</label>
+                  <Textarea
+                    value={newReview.comment}
+                    onChange={(e) =>
+                      setNewReview({ ...newReview, comment: e.target.value })
+                    }
+                    placeholder="Ürün hakkındaki düşünceleriniz..."
+                    rows={4}
+                  />
+                </div>
+                <Button onClick={submitReview} className="gradient-hero border-0">
+                  Yorum Gönder
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Reviews List */}
+          <div className="space-y-4">
+            {reviews.length === 0 ? (
+              <Card>
+                <CardContent className="pt-6">
+                  <p className="text-center text-muted-foreground py-8">
+                    Henüz yorum yapılmamış. İlk yorumu siz yapın!
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              reviews.map((review) => (
+                <Card key={review.id}>
+                  <CardContent className="pt-6">
+                    <div className="flex items-center gap-1 mb-2">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`h-4 w-4 ${
+                            i < review.rating
+                              ? "fill-primary text-primary"
+                              : "text-muted-foreground"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    {review.comment && (
+                      <p className="text-muted-foreground">{review.comment}</p>
+                    )}
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
         </section>
       </main>
     </div>
