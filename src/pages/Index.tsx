@@ -163,37 +163,39 @@ const Index = () => {
 
         {/* Brands Section */}
         <section className="mb-16">
-          <div className="flex items-center justify-between mb-8">
-            <div>
+          <div className="flex items-center justify-center mb-8">
+            <div className="text-center">
               <h2 className="text-4xl font-bold mb-2">Markalar</h2>
               <p className="text-muted-foreground">Sevdiğiniz markaları keşfedin</p>
             </div>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
-            {brands.map((brand) => (
-              <Card
-                key={brand.id}
-                className="cursor-pointer hover:shadow-hover transition-smooth group mx-auto w-full"
-                onClick={() => handleBrandClick(brand.id)}
-              >
-                <CardContent className="p-6 flex flex-col items-center justify-center aspect-square">
-                  {brand.logo_url ? (
-                    <img
-                      src={brand.logo_url}
-                      alt={brand.name}
-                      className="h-16 w-16 object-contain mb-3 group-hover:scale-110 transition-smooth"
-                    />
-                  ) : (
-                    <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mb-3">
-                      <span className="text-2xl font-bold text-muted-foreground">
-                        {brand.name.charAt(0)}
-                      </span>
-                    </div>
-                  )}
-                  <h3 className="font-semibold text-center">{brand.name}</h3>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="flex justify-center">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 max-w-5xl w-full justify-items-center">
+              {brands.map((brand) => (
+                <Card
+                  key={brand.id}
+                  className="cursor-pointer hover:shadow-hover transition-smooth group w-full max-w-[140px]"
+                  onClick={() => handleBrandClick(brand.id)}
+                >
+                  <CardContent className="p-6 flex flex-col items-center justify-center aspect-square">
+                    {brand.logo_url ? (
+                      <img
+                        src={brand.logo_url}
+                        alt={brand.name}
+                        className="h-16 w-16 object-contain mb-3 group-hover:scale-110 transition-smooth"
+                      />
+                    ) : (
+                      <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mb-3">
+                        <span className="text-2xl font-bold text-muted-foreground">
+                          {brand.name.charAt(0)}
+                        </span>
+                      </div>
+                    )}
+                    <h3 className="font-semibold text-center">{brand.name}</h3>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </section>
       </main>
