@@ -41,7 +41,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
 
   useEffect(() => {
     if (cartSheetOpen && cartItems.length === 0 && favoriteItems.length === 0) {
-      setCartSheetOpen(false);
+      // Boşken de kullanıcı isterse açabilsin diye artık otomatik kapatmıyoruz
     }
   }, [cartSheetOpen, cartItems.length, favoriteItems.length]);
 
