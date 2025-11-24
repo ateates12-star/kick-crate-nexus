@@ -7,12 +7,13 @@ import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import ProductDetail from "./pages/ProductDetail";
+import Products from "./pages/Products";
 import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import Favorites from "./pages/Favorites";
 import Notifications from "./pages/Notifications";
 import Admin from "./pages/Admin";
-import Products from "./pages/admin/Products";
+import AdminProducts from "./pages/admin/Products";
 import Brands from "./pages/admin/Brands";
 import Sliders from "./pages/admin/Sliders";
 import Users from "./pages/admin/Users";
@@ -32,6 +33,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/products" element={<Products />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/profile" element={<Profile />} />
@@ -39,7 +41,7 @@ const App = () => (
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/admin" element={<Admin />} />
-            <Route path="/admin/products" element={<Products />} />
+            <Route path="/admin/products" element={<AdminProducts />} />
             <Route path="/admin/brands" element={<Brands />} />
             <Route path="/admin/sliders" element={<Sliders />} />
             <Route path="/admin/users" element={<Users />} />

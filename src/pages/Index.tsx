@@ -1,17 +1,10 @@
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import HeroSlider from "@/components/HeroSlider";
 import ProductCard from "@/components/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
+import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
 interface Product {
@@ -31,20 +24,20 @@ interface Product {
 interface Brand {
   id: string;
   name: string;
+  logo_url: string | null;
 }
 
 const Index = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
-  const [selectedBrand, setSelectedBrand] = useState<string>("all");
-  const [priceRange, setPriceRange] = useState<number[]>([0, 10000]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
     fetchBrands();
-    fetchProducts();
+    fetchFeaturedProducts();
     checkNotifications();
   }, []);
 
@@ -87,7 +80,7 @@ const Index = () => {
     }
   };
 
-  const fetchProducts = async () => {
+  const fetchFeaturedProducts = async () => {
     try {
       setIsLoading(true);
       const { data, error } = await supabase
@@ -97,10 +90,12 @@ const Index = () => {
           brands(name),
           product_images(image_url, is_primary)
         `)
-        .order("created_at", { ascending: false });
+        .eq("is_featured", true)
+        .order("created_at", { ascending: false })
+        .limit(8);
 
       if (error) throw error;
-      setProducts(data || []);
+      setFeaturedProducts(data || []);
     } catch (error) {
       console.error("Error fetching products:", error);
     } finally {
@@ -108,17 +103,9 @@ const Index = () => {
     }
   };
 
-  const filteredProducts = products.filter((product) => {
-    const brandMatch =
-      selectedBrand === "all" || product.brand_id === selectedBrand;
-    const priceMatch =
-      product.price >= priceRange[0] && product.price <= priceRange[1];
-    const searchMatch =
-      searchQuery === "" ||
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.brands?.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return brandMatch && priceMatch && searchMatch;
-  });
+  const handleBrandClick = (brandId: string) => {
+    navigate(`/products?brand=${brandId}`);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -136,7 +123,6 @@ const Index = () => {
             <h2 className="text-3xl font-bold">Öne Çıkan Ürünler</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Featured products will be shown here */}
             {isLoading ? (
               Array.from({ length: 4 }).map((_, i) => (
                 <div
@@ -144,93 +130,8 @@ const Index = () => {
                   className="aspect-square bg-muted animate-pulse rounded-lg"
                 />
               ))
-            ) : (
-              filteredProducts.slice(0, 4).map((product) => (
-                <ProductCard
-                  key={product.id}
-                  id={product.id}
-                  name={product.name}
-                  price={product.price}
-                  imageUrl={
-                    product.product_images.find((img) => img.is_primary)
-                      ?.image_url ||
-                    product.product_images[0]?.image_url ||
-                    "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
-                  }
-                  brandName={product.brands?.name}
-                />
-              ))
-            )}
-          </div>
-        </section>
-
-        {/* Products with Filters Section */}
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-bold">Tüm Ürünler</h2>
-          </div>
-
-          {/* Filters */}
-          <div className="bg-card rounded-lg shadow-card p-6 mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Brand Filter */}
-              <div>
-                <label className="text-sm font-medium mb-2 block">Marka</label>
-                <Select value={selectedBrand} onValueChange={setSelectedBrand}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Tüm Markalar" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Tüm Markalar</SelectItem>
-                    {brands.map((brand) => (
-                      <SelectItem key={brand.id} value={brand.id}>
-                        {brand.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Price Range Filter */}
-              <div className="md:col-span-2">
-                <label className="text-sm font-medium mb-2 block">
-                  Fiyat Aralığı: ₺{priceRange[0]} - ₺{priceRange[1]}
-                </label>
-                <Slider
-                  value={priceRange}
-                  onValueChange={setPriceRange}
-                  max={10000}
-                  step={100}
-                  className="mt-2"
-                />
-              </div>
-            </div>
-
-            {selectedBrand !== "all" || priceRange[0] !== 0 || priceRange[1] !== 10000 ? (
-              <Button
-                variant="outline"
-                className="mt-4"
-                onClick={() => {
-                  setSelectedBrand("all");
-                  setPriceRange([0, 10000]);
-                }}
-              >
-                Filtreleri Temizle
-              </Button>
-            ) : null}
-          </div>
-
-          {/* Products Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {isLoading ? (
-              Array.from({ length: 8 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="aspect-square bg-muted animate-pulse rounded-lg"
-                />
-              ))
-            ) : filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
+            ) : featuredProducts.length > 0 ? (
+              featuredProducts.map((product) => (
                 <ProductCard
                   key={product.id}
                   id={product.id}
@@ -247,9 +148,42 @@ const Index = () => {
               ))
             ) : (
               <div className="col-span-full text-center py-12 text-muted-foreground">
-                Filtreye uygun ürün bulunamadı.
+                Öne çıkan ürün bulunmuyor.
               </div>
             )}
+          </div>
+        </section>
+
+        {/* Brands Section */}
+        <section>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-3xl font-bold">Markalar</h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+            {brands.map((brand) => (
+              <Card
+                key={brand.id}
+                className="cursor-pointer hover:shadow-hover transition-smooth group"
+                onClick={() => handleBrandClick(brand.id)}
+              >
+                <CardContent className="p-6 flex flex-col items-center justify-center aspect-square">
+                  {brand.logo_url ? (
+                    <img
+                      src={brand.logo_url}
+                      alt={brand.name}
+                      className="h-16 w-16 object-contain mb-3 group-hover:scale-110 transition-smooth"
+                    />
+                  ) : (
+                    <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mb-3">
+                      <span className="text-2xl font-bold text-muted-foreground">
+                        {brand.name.charAt(0)}
+                      </span>
+                    </div>
+                  )}
+                  <h3 className="font-semibold text-center">{brand.name}</h3>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </section>
       </main>
