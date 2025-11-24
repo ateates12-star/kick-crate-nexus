@@ -16,32 +16,32 @@ Colors: Black/White base with Orange accent
 @layer base {
   :root {
     /* Base colors */
-    --background: 240 4% 95%;
-    --foreground: 240 5% 10%;
+    --background: 0 0% 96%;
+    --foreground: 210 18% 16%;
 
     /* Card colors */
     --card: 0 0% 98%;
-    --card-foreground: 240 5% 10%;
+    --card-foreground: 210 18% 16%;
 
     /* Popover colors */
-    --popover: 240 5% 90%;
-    --popover-foreground: 240 5% 10%;
+    --popover: 0 0% 96%;
+    --popover-foreground: 210 18% 16%;
 
-    /* Primary - Bold Orange */
-    --primary: 258 89% 66%;
-    --primary-foreground: 250 100% 97%;
+    /* Primary - Dark Blue Gray */
+    --primary: 210 18% 16%;
+    --primary-foreground: 0 0% 98%;
 
-    /* Secondary - Light Gray */
-    --secondary: 240 5% 33%;
+    /* Secondary - Medium Gray */
+    --secondary: 217 10% 25%;
     --secondary-foreground: 0 0% 98%;
 
     /* Muted colors */
-    --muted: 240 4% 83%;
-    --muted-foreground: 240 5% 10%;
+    --muted: 217 10% 88%;
+    --muted-foreground: 210 18% 16%;
 
-    /* Accent - Vibrant Orange */
-    --accent: 269 100% 98%;
-    --accent-foreground: 270 91% 65%;
+    /* Accent - Highlight */
+    --accent: 217 10% 25%;
+    --accent-foreground: 0 0% 98%;
 
     /* Destructive colors */
     --destructive: 0 72% 50%;
@@ -100,32 +100,32 @@ Colors: Black/White base with Orange accent
 
   .dark {
     /* Base colors */
-    --background: 240 5% 10%;
+    --background: 210 18% 16%;
     --foreground: 0 0% 98%;
 
     /* Card colors */
-    --card: 240 3% 15%;
+    --card: 217 10% 25%;
     --card-foreground: 0 0% 98%;
 
     /* Popover colors */
-    --popover: 240 5% 26%;
+    --popover: 217 10% 25%;
     --popover-foreground: 0 0% 98%;
 
-    /* Primary - Bold Orange */
-    --primary: 255 91% 76%;
-    --primary-foreground: 261 72% 22%;
+    /* Primary - Light for contrast */
+    --primary: 0 0% 98%;
+    --primary-foreground: 210 18% 16%;
 
-    /* Secondary - Dark Gray */
-    --secondary: 240 3% 46%;
+    /* Secondary - Medium Gray */
+    --secondary: 217 10% 35%;
     --secondary-foreground: 0 0% 98%;
 
     /* Muted colors */
-    --muted: 240 3% 46%;
-    --muted-foreground: 0 0% 98%;
+    --muted: 217 10% 35%;
+    --muted-foreground: 0 0% 88%;
 
-    /* Accent - Vibrant Orange */
-    --accent: 273 86% 20%;
-    --accent-foreground: 270 95% 75%;
+    /* Accent - Highlight */
+    --accent: 217 10% 35%;
+    --accent-foreground: 0 0% 98%;
 
     /* Destructive colors */
     --destructive: 0 84% 60%;
