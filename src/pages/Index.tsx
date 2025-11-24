@@ -162,34 +162,49 @@ const Index = () => {
         </section>
 
         {/* Brands Section */}
-        <section className="mb-16">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-3 gradient-hero bg-clip-text text-transparent">Markalar</h2>
-            <p className="text-muted-foreground text-lg">Sevdiğiniz markaları keşfedin</p>
+        <section className="mb-16 relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent rounded-3xl -z-10" />
+          <div className="text-center mb-12 pt-8">
+            <h2 className="text-5xl font-bold mb-4 gradient-hero bg-clip-text text-transparent animate-fade-in">
+              Markalar
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              Dünyanın en iyi spor ayakkabı markalarını keşfedin
+            </p>
           </div>
-          <div className="flex justify-center w-full">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6 max-w-7xl mx-auto px-4">
-              {brands.map((brand) => (
-                <div key={brand.id} className="flex justify-center">
+          <div className="flex justify-center w-full px-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 max-w-7xl w-full">
+              {brands.map((brand, index) => (
+                <div
+                  key={brand.id}
+                  className="flex justify-center animate-fade-in"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
                   <Card
-                    className="cursor-pointer hover:shadow-elegant hover:scale-105 transition-smooth group w-full max-w-[180px] backdrop-blur-sm bg-card/50"
+                    className="cursor-pointer hover:shadow-elegant hover:scale-110 transition-all duration-300 group w-full backdrop-blur-md bg-gradient-to-br from-card/80 to-card/40 border-2 border-transparent hover:border-primary/20 overflow-hidden relative"
                     onClick={() => handleBrandClick(brand.id)}
                   >
-                    <CardContent className="p-6 flex flex-col items-center justify-center aspect-square">
+                    <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-10 transition-opacity" />
+                    <CardContent className="p-8 flex flex-col items-center justify-center aspect-square relative">
                       {brand.logo_url ? (
-                        <img
-                          src={brand.logo_url}
-                          alt={brand.name}
-                          className="h-16 w-16 object-contain mb-3 group-hover:scale-110 transition-smooth filter group-hover:brightness-110"
-                        />
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-gradient-primary rounded-full blur-xl opacity-0 group-hover:opacity-30 transition-opacity" />
+                          <img
+                            src={brand.logo_url}
+                            alt={brand.name}
+                            className="h-20 w-20 object-contain mb-4 group-hover:scale-125 transition-all duration-300 relative z-10 filter drop-shadow-lg"
+                          />
+                        </div>
                       ) : (
-                        <div className="h-16 w-16 bg-gradient-primary rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-smooth">
-                          <span className="text-2xl font-bold text-white">
+                        <div className="h-20 w-20 bg-gradient-primary rounded-full flex items-center justify-center mb-4 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300 shadow-elegant">
+                          <span className="text-3xl font-bold text-white">
                             {brand.name.charAt(0)}
                           </span>
                         </div>
                       )}
-                      <h3 className="font-semibold text-center text-sm group-hover:text-primary transition-colors">{brand.name}</h3>
+                      <h3 className="font-bold text-center text-sm group-hover:text-primary group-hover:scale-105 transition-all duration-300">
+                        {brand.name}
+                      </h3>
                     </CardContent>
                   </Card>
                 </div>
