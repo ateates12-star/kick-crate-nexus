@@ -460,7 +460,7 @@ export type Database = {
       sync_profile_email: { Args: never; Returns: undefined }
     }
     Enums: {
-      app_role: "admin" | "user"
+      app_role: "admin" | "user" | "banned"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -588,7 +588,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      app_role: ["admin", "user", "banned"],
     },
   },
 } as const
