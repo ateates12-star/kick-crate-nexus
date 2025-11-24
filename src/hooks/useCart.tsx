@@ -31,11 +31,14 @@ export const useCart = () => {
           schema: "public",
           table: "cart_items",
         },
-        () => {
+        (payload) => {
+          console.log("Cart changed:", payload);
           fetchCart();
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log("Cart subscription status:", status);
+      });
 
     return () => {
       supabase.removeChannel(channel);
