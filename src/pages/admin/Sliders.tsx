@@ -42,6 +42,7 @@ const Sliders = () => {
     is_active: true,
     display_order: "0",
   });
+  const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -165,6 +166,52 @@ const Sliders = () => {
     });
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast({
+        title: "Hata",
+        description: "Lütfen bir resim dosyası seçin.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setUploading(true);
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `sliders/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("site-assets")
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("site-assets")
+        .getPublicUrl(filePath);
+
+      setFormData({ ...formData, image_url: publicUrl });
+      toast({
+        title: "Başarılı",
+        description: "Resim yüklendi.",
+      });
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast({
+        title: "Hata",
+        description: "Resim yüklenemedi.",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   if (loading) {
     return (
       <AdminLayout>
@@ -212,15 +259,31 @@ const Sliders = () => {
                 />
               </div>
               <div>
-                <Label>Görsel URL</Label>
-                <Input
-                  type="url"
-                  required
-                  value={formData.image_url}
-                  onChange={(e) =>
-                    setFormData({ ...formData, image_url: e.target.value })
-                  }
-                />
+                <Label>Görsel</Label>
+                <div className="space-y-2">
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    disabled={uploading}
+                  />
+                  <span className="text-xs text-muted-foreground">veya</span>
+                  <Input
+                    type="url"
+                    placeholder="Görsel URL'si girin"
+                    value={formData.image_url}
+                    onChange={(e) =>
+                      setFormData({ ...formData, image_url: e.target.value })
+                    }
+                  />
+                  {formData.image_url && (
+                    <img
+                      src={formData.image_url}
+                      alt="Önizleme"
+                      className="w-full h-32 object-cover rounded mt-2"
+                    />
+                  )}
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>

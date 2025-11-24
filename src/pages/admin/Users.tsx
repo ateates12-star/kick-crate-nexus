@@ -20,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Trash2, Mail } from "lucide-react";
+import { Trash2, Mail, Key } from "lucide-react";
 
 interface User {
   id: string;
@@ -41,8 +41,10 @@ const Users = () => {
   const [roles, setRoles] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [newEmail, setNewEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -135,6 +137,12 @@ const Users = () => {
     setEmailDialogOpen(true);
   };
 
+  const openPasswordDialog = (user: User) => {
+    setSelectedUser(user);
+    setNewPassword("");
+    setPasswordDialogOpen(true);
+  };
+
   const handleUpdateEmail = async () => {
     if (!selectedUser || !newEmail) return;
 
@@ -157,6 +165,42 @@ const Users = () => {
       toast({
         title: "Hata",
         description: "E-posta güncellenemedi.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    if (!selectedUser || !newPassword) return;
+
+    if (newPassword.length < 6) {
+      toast({
+        title: "Hata",
+        description: "Şifre en az 6 karakter olmalıdır.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase.functions.invoke('change-user-password', {
+        body: { userId: selectedUser.id, newPassword },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Başarılı",
+        description: "Şifre güncellendi.",
+      });
+
+      setPasswordDialogOpen(false);
+      setNewPassword("");
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        title: "Hata",
+        description: "Şifre güncellenemedi.",
         variant: "destructive",
       });
     }
@@ -226,6 +270,13 @@ const Users = () => {
                     </Button>
                     <Button
                       size="sm"
+                      variant="outline"
+                      onClick={() => openPasswordDialog(user)}
+                    >
+                      <Key className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
                       variant="destructive"
                       onClick={() => handleDeleteUser(user.id)}
                     >
@@ -261,6 +312,37 @@ const Users = () => {
               <Button
                 variant="outline"
                 onClick={() => setEmailDialogOpen(false)}
+              >
+                İptal
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Şifre Değiştir</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Yeni Şifre</Label>
+              <Input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="En az 6 karakter"
+                minLength={6}
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={handleUpdatePassword} className="flex-1">
+                Güncelle
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setPasswordDialogOpen(false)}
               >
                 İptal
               </Button>
