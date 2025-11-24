@@ -56,6 +56,21 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
   const [signUpPassword, setSignUpPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    checkUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (cartSheetOpen && cartItems.length === 0 && favoriteItems.length === 0) {
@@ -140,7 +155,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
     setIsAuthLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: signUpEmail,
         password: signUpPassword,
         options: {
@@ -154,10 +169,19 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
 
       if (error) throw error;
 
-      toast({
-        title: "Kayıt başarılı!",
-        description: "Hesabınız oluşturuldu. Giriş yapabilirsiniz.",
-      });
+      // Check if user is auto-confirmed (when auto-confirm is enabled)
+      if (data.user && data.session) {
+        toast({
+          title: "Kayıt başarılı!",
+          description: "Otomatik giriş yapıldı. Hoş geldiniz!",
+        });
+      } else {
+        toast({
+          title: "Kayıt başarılı!",
+          description: "Hesabınız oluşturuldu. Giriş yapabilirsiniz.",
+        });
+      }
+      setAuthOpen(false);
     } catch (error: any) {
       toast({
         title: "Kayıt başarısız",
@@ -191,7 +215,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             {siteLogo ? (
-              <img src={siteLogo} alt="Logo" className="h-8 object-contain" />
+              <img src={siteLogo} alt="Logo" className="h-12 object-contain" />
             ) : (
               <div className="text-2xl font-bold gradient-hero bg-clip-text text-transparent">
                 KICKZ
@@ -448,13 +472,15 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
               </Link>
             )}
 
-            <Button
-              variant="outline"
-              className="hidden lg:inline-flex hover-scale"
-              onClick={() => setAuthOpen(true)}
-            >
-              Giriş / Kayıt
-            </Button>
+            {!user && (
+              <Button
+                variant="outline"
+                className="hidden lg:inline-flex hover-scale"
+                onClick={() => setAuthOpen(true)}
+              >
+                Giriş / Kayıt
+              </Button>
+            )}
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -600,17 +626,19 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                 >
                   {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setAuthOpen(true);
-                    setIsMenuOpen(false);
-                  }}
-                >
-                  <User className="h-5 w-5 mr-2" />
-                  Giriş / Kayıt
-                </Button>
+                {!user && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setAuthOpen(true);
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    <User className="h-5 w-5 mr-2" />
+                    Giriş / Kayıt
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -620,10 +648,17 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
       <Dialog open={authOpen} onOpenChange={setAuthOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="gradient-hero bg-clip-text text-transparent text-2xl">
-              KICKZ
-            </DialogTitle>
-            <DialogDescription>
+            <div className="flex justify-center mb-4">
+              {siteLogo ? (
+                <img src={siteLogo} alt="Logo" className="h-16 object-contain" />
+              ) : (
+                <div className="text-3xl font-bold gradient-hero bg-clip-text text-transparent">
+                  KICKZ
+                </div>
+              )}
+            </div>
+            <DialogTitle className="text-center">Hoş Geldiniz</DialogTitle>
+            <DialogDescription className="text-center">
               Hesabınıza giriş yapın veya yeni hesap oluşturun
             </DialogDescription>
           </DialogHeader>
