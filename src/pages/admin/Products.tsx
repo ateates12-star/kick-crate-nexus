@@ -348,16 +348,16 @@ const Products = () => {
 
   return (
     <AdminLayout>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Ürün Yönetimi</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold">Ürün Yönetimi</h1>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button onClick={() => openDialog()}>
+            <Button onClick={() => openDialog()} size="sm" className="w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               Yeni Ürün
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="w-[95vw] max-w-2xl mx-auto max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
                 {editingProduct ? "Ürünü Düzenle" : "Yeni Ürün Ekle"}

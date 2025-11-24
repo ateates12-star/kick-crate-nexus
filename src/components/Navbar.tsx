@@ -259,26 +259,27 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-xl border-b border-border/60 shadow-elegant supports-[backdrop-filter]:bg-background/70">
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between gap-4">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="flex h-16 sm:h-20 md:h-24 items-center justify-between gap-2 sm:gap-4">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-2 sm:space-x-3 hover-scale">
             {siteLogo ? (
-              <img src={siteLogo} alt="Logo" className="h-12 object-contain" />
+              <img src={siteLogo} alt="Logo" className="h-8 sm:h-10 md:h-12 object-contain" />
             ) : (
-              <div className="text-2xl font-bold gradient-hero bg-clip-text text-transparent">
+              <div className="text-lg sm:text-2xl md:text-3xl font-bold gradient-hero bg-clip-text text-transparent">
                 KICKZ
               </div>
             )}
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
             <Link to="/products">
-              <Button variant="ghost" className="text-base font-bold relative group overflow-hidden">
-                <span className="relative z-10 flex items-center gap-2">
-                  <Sparkles className="h-4 w-4" />
-                  Tüm Ürünler
+              <Button variant="ghost" className="text-sm lg:text-base font-bold relative group overflow-hidden">
+                <span className="relative z-10 flex items-center gap-1.5 sm:gap-2">
+                  <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Tüm Ürünler</span>
+                  <span className="sm:hidden">Ürünler</span>
                 </span>
                 <span className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl"></span>
                 <span className="absolute inset-0 border-2 border-primary rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></span>
@@ -287,14 +288,14 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
           </div>
 
           {/* Search Bar - Desktop */}
-          <div className="hidden md:flex flex-1 max-w-xl mx-6">
+          <div className="hidden md:flex flex-1 max-w-md lg:max-w-xl mx-3 lg:mx-6">
             <div className="relative w-full">
               <div className="absolute inset-0 rounded-full bg-gradient-primary opacity-10 pointer-events-none" />
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Marka, model veya numara ara..."
-                className="pl-11 pr-4 rounded-full bg-background/80 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/60"
+                placeholder="Ara..."
+                className="pl-9 sm:pl-11 pr-3 sm:pr-4 rounded-full bg-background/80 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/60 text-sm"
                 value={localSearchQuery}
                 onChange={(e) => setLocalSearchQuery(e.target.value)}
                 onFocus={() => localSearchQuery.length >= 2 && setShowSearchResults(true)}
@@ -334,17 +335,17 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
           </div>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-2 lg:space-x-4">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="hover:bg-primary/20 hover:text-primary transition-all duration-300 hover:scale-110 hover:rotate-12"
+              className="hover:bg-primary/20 hover:text-primary transition-all duration-300 h-9 w-9 lg:h-10 lg:w-10"
             >
               {theme === "dark" ? (
-                <Sun className="h-5 w-5" />
+                <Sun className="h-4 w-4 lg:h-5 lg:w-5" />
               ) : (
-                <Moon className="h-5 w-5" />
+                <Moon className="h-4 w-4 lg:h-5 lg:w-5" />
               )}
             </Button>
 
@@ -352,12 +353,12 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
 
             <Sheet open={cartSheetOpen} onOpenChange={setCartSheetOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative hover:bg-primary/20 hover:text-primary transition-all duration-300 hover:scale-110">
-                  <ShoppingCart className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="relative hover:bg-primary/20 hover:text-primary transition-all duration-300 h-9 w-9 lg:h-10 lg:w-10">
+                  <ShoppingCart className="h-4 w-4 lg:h-5 lg:w-5" />
                   {(cartItems.length + favoriteItems.length) > 0 && (
                     <Badge
                       variant="destructive"
-                      className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                      className="absolute -top-1 -right-1 h-4 w-4 lg:h-5 lg:w-5 flex items-center justify-center p-0 text-[10px] lg:text-xs"
                     >
                       {cartItems.length + favoriteItems.length}
                     </Badge>
@@ -551,7 +552,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
             {!user && (
               <Button
                 variant="outline"
-                className="hidden lg:inline-flex hover:bg-primary hover:text-primary-foreground border-primary/50 hover:border-primary transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20"
+                className="hidden lg:inline-flex hover:bg-primary hover:text-primary-foreground border-primary/50 hover:border-primary transition-all duration-300 text-sm lg:text-base"
                 onClick={() => setAuthOpen(true)}
               >
                 Giriş / Kayıt
@@ -560,8 +561,8 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative hover:bg-primary/20 hover:text-primary transition-all duration-300 hover:scale-110">
-                  <User className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="relative hover:bg-primary/20 hover:text-primary transition-all duration-300 h-9 w-9 lg:h-10 lg:w-10">
+                  <User className="h-4 w-4 lg:h-5 lg:w-5" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-64">
@@ -646,7 +647,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden hover:bg-primary/20 transition-all duration-300 hover:scale-110"
+            className="md:hidden hover:bg-primary/20 transition-all duration-300 h-9 w-9"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? (
@@ -659,23 +660,23 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border animate-fade-in">
-            <div className="space-y-4">
+          <div className="md:hidden py-3 sm:py-4 border-t border-border animate-fade-in">
+            <div className="space-y-3 sm:space-y-4">
               <Link to="/products" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="ghost" className="w-full hover:bg-primary/10 transition-all duration-300 relative group">
+                <Button variant="ghost" className="w-full hover:bg-primary/10 transition-all duration-300 relative group text-sm sm:text-base">
                   <span className="flex items-center gap-2">
-                    <Sparkles className="h-4 w-4" />
+                    <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     Tüm Ürünler
                   </span>
                   <span className="absolute inset-0 border-2 border-primary rounded-lg opacity-0 group-hover:opacity-50 transition-opacity"></span>
                 </Button>
               </Link>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
                 <Input
                   type="search"
                   placeholder="Ara..."
-                  className="pl-10"
+                  className="pl-9 sm:pl-10 text-sm"
                   value={localSearchQuery}
                   onChange={(e) => setLocalSearchQuery(e.target.value)}
                   onFocus={() => localSearchQuery.length >= 2 && setShowSearchResults(true)}

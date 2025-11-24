@@ -201,16 +201,16 @@ const Brands = () => {
 
   return (
     <AdminLayout>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Marka Yönetimi</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold">Marka Yönetimi</h1>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button onClick={() => openDialog()}>
+            <Button onClick={() => openDialog()} size="sm" className="w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               Yeni Marka
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="w-[95vw] max-w-md mx-auto">
             <DialogHeader>
               <DialogTitle>
                 {editingBrand ? "Markayı Düzenle" : "Yeni Marka Ekle"}
@@ -299,7 +299,7 @@ const Brands = () => {
         </Dialog>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-3 sm:gap-4">
         {brands.length === 0 ? (
           <Card>
             <CardContent className="p-8 text-center">
@@ -309,19 +309,19 @@ const Brands = () => {
         ) : (
           brands.map((brand) => (
             <Card key={brand.id}>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 sm:justify-between">
+                  <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
                     {brand.logo_url && (
                       <img
                         src={brand.logo_url}
                         alt={brand.name}
-                        className="h-12 w-12 object-contain"
+                        className="h-10 w-10 sm:h-12 sm:w-12 object-contain shrink-0"
                       />
                     )}
-                    <h3 className="font-semibold text-lg">{brand.name}</h3>
+                    <h3 className="font-semibold text-base sm:text-lg">{brand.name}</h3>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-1.5 sm:gap-2 w-full sm:w-auto justify-end">
                     <Button
                       size="sm"
                       variant="outline"

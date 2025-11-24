@@ -111,9 +111,9 @@ const Reviews = () => {
 
   return (
     <AdminLayout>
-      <h1 className="text-3xl font-bold mb-8">Yorum Yönetimi</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Yorum Yönetimi</h1>
 
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {reviews.length === 0 ? (
           <Card>
             <CardContent className="p-8 text-center">
@@ -123,11 +123,11 @@ const Reviews = () => {
         ) : (
           reviews.map((review) => (
             <Card key={review.id}>
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="font-semibold">{review.products.name}</h3>
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row items-start gap-4 sm:justify-between">
+                  <div className="flex-1 w-full sm:w-auto">
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <h3 className="font-semibold text-sm sm:text-base">{review.products.name}</h3>
                       <Badge
                         variant={review.is_approved ? "default" : "secondary"}
                       >
@@ -147,16 +147,16 @@ const Reviews = () => {
                       ))}
                     </div>
                     {review.comment && (
-                      <p className="text-muted-foreground mb-2">{review.comment}</p>
+                      <p className="text-muted-foreground mb-2 text-sm">{review.comment}</p>
                     )}
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-[10px] sm:text-xs text-muted-foreground">
                       {formatDistanceToNow(new Date(review.created_at), {
                         addSuffix: true,
                         locale: tr,
                       })}
                     </p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-1.5 sm:gap-2 flex-wrap w-full sm:w-auto">
                     {!review.is_approved && (
                       <Button
                         size="sm"
