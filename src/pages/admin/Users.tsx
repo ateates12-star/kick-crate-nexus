@@ -26,6 +26,7 @@ interface User {
   id: string;
   first_name: string | null;
   last_name: string | null;
+  email: string | null;
   created_at: string;
   last_active_at: string | null;
 }
@@ -230,22 +231,31 @@ const Users = () => {
             <Card key={user.id}>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold">
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg">
                       {user.first_name && user.last_name
                         ? `${user.first_name} ${user.last_name}`
                         : "İsimsiz Kullanıcı"}
                     </h3>
+                    {user.email && (
+                      <p className="text-sm text-muted-foreground">
+                        {user.email}
+                      </p>
+                    )}
                     <p className="text-sm text-muted-foreground">
                       Kayıt: {new Date(user.created_at).toLocaleDateString("tr-TR")}
                     </p>
                     {user.last_active_at && (
                       <p className="text-sm text-muted-foreground">
-                        Son Aktif: {new Date(user.last_active_at).toLocaleDateString("tr-TR")}
+                        Son Aktif: {
+                          Date.now() - new Date(user.last_active_at).getTime() < 5 * 60 * 1000
+                            ? "Çevrimiçi"
+                            : new Date(user.last_active_at).toLocaleString("tr-TR")
+                        }
                       </p>
                     )}
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap justify-end">
                     <Badge variant={roles[user.id] === "admin" ? "default" : "secondary"}>
                       {roles[user.id] === "admin" ? "Admin" : "Kullanıcı"}
                     </Badge>
