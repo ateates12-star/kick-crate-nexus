@@ -122,11 +122,11 @@ const Index = () => {
         <section className="mb-16">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-4xl font-bold mb-2">Öne Çıkan Ürünler</h2>
+              <h2 className="text-4xl font-bold mb-2 text-foreground">Öne Çıkan Ürünler</h2>
               <p className="text-muted-foreground">En beğenilen ve trend ürünlerimizi keşfedin</p>
             </div>
             <Link to="/products">
-              <Button variant="outline" className="hover:bg-secondary hover:text-secondary-foreground border-border/50 hover:border-primary/30 transition-all duration-300 hover:scale-105">Tümünü Gör</Button>
+              <Button variant="outline" className="hover:bg-primary hover:text-primary-foreground border-primary/50 hover:border-primary transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20">Tümünü Gör</Button>
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -165,7 +165,7 @@ const Index = () => {
         <section className="mb-16 relative">
           <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent rounded-3xl -z-10" />
           <div className="text-center mb-12 pt-8">
-            <h2 className="text-5xl font-bold mb-4 gradient-hero bg-clip-text text-transparent animate-fade-in">
+            <h2 className="text-5xl font-bold mb-4 text-foreground animate-fade-in">
               Markalar
             </h2>
             <p className="text-muted-foreground text-lg">
@@ -181,14 +181,14 @@ const Index = () => {
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <Card
-                    className="cursor-pointer hover:shadow-2xl hover:scale-110 transition-all duration-500 group w-full backdrop-blur-md bg-gradient-to-br from-card/80 to-card/40 border-2 border-border/50 hover:border-primary/30 overflow-hidden relative hover:-translate-y-1"
+                    className="cursor-pointer hover:shadow-2xl hover:scale-110 transition-all duration-500 group w-full backdrop-blur-md bg-gradient-to-br from-card/80 to-card/40 border-2 border-border/50 hover:border-primary/50 overflow-hidden relative hover:-translate-y-1"
                     onClick={() => handleBrandClick(brand.id)}
                   >
-                    <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-5 transition-opacity duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <CardContent className="p-8 flex flex-col items-center justify-center aspect-square relative">
                       {brand.logo_url ? (
                         <div className="relative">
-                          <div className="absolute inset-0 bg-gradient-primary rounded-full blur-xl opacity-0 group-hover:opacity-30 transition-opacity" />
+                          <div className="absolute inset-0 bg-primary rounded-full blur-xl opacity-0 group-hover:opacity-30 transition-opacity" />
                           <img
                             src={brand.logo_url}
                             alt={brand.name}
@@ -196,8 +196,8 @@ const Index = () => {
                           />
                         </div>
                       ) : (
-                        <div className="h-20 w-20 bg-gradient-primary rounded-full flex items-center justify-center mb-4 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300 shadow-elegant">
-                          <span className="text-3xl font-bold text-white">
+                        <div className="h-20 w-20 bg-primary rounded-full flex items-center justify-center mb-4 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300 shadow-elegant">
+                          <span className="text-3xl font-bold text-primary-foreground">
                             {brand.name.charAt(0)}
                           </span>
                         </div>

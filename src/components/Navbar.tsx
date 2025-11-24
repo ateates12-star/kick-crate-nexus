@@ -251,7 +251,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                   {searchResults.map((product) => (
                     <div
                       key={product.id}
-                      className="flex items-center gap-3 p-3 hover:bg-secondary/20 cursor-pointer transition-all duration-300 border-b border-border/60 last:border-0 hover:pl-4"
+                      className="flex items-center gap-3 p-3 hover:bg-primary/10 cursor-pointer transition-all duration-300 border-b border-border/60 last:border-0 hover:pl-4 hover:border-l-2 hover:border-l-primary"
                       onClick={() => handleSearchResultClick(product.id)}
                     >
                       <img
@@ -285,7 +285,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
               variant="ghost"
               size="icon"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="hover:bg-secondary/20 hover:text-foreground transition-all duration-300 hover:scale-110 hover:rotate-12"
+              className="hover:bg-primary/20 hover:text-primary transition-all duration-300 hover:scale-110 hover:rotate-12"
             >
               {theme === "dark" ? (
                 <Sun className="h-5 w-5" />
@@ -298,7 +298,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
 
             <Sheet open={cartSheetOpen} onOpenChange={setCartSheetOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative hover:bg-secondary/20 hover:text-foreground transition-all duration-300 hover:scale-110">
+                <Button variant="ghost" size="icon" className="relative hover:bg-primary/20 hover:text-primary transition-all duration-300 hover:scale-110">
                   <ShoppingCart className="h-5 w-5" />
                   {(cartItems.length + favoriteItems.length) > 0 && (
                     <Badge
@@ -408,7 +408,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                             </span>
                           </div>
                           <Link to="/cart" onClick={() => setCartSheetOpen(false)}>
-                            <Button className="w-full bg-secondary hover:bg-secondary/80 text-secondary-foreground border-0 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 font-semibold">
+                            <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02] transition-all duration-300 font-semibold">
                               Sepete Git
                             </Button>
                           </Link>
@@ -466,7 +466,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
 
             {isAdmin && (
               <Link to="/admin">
-                <Button variant="ghost" size="icon" className="hover:bg-secondary/20 hover:text-foreground transition-all duration-300 hover:scale-110">
+                <Button variant="ghost" size="icon" className="hover:bg-primary/20 hover:text-primary transition-all duration-300 hover:scale-110">
                   <Shield className="h-5 w-5" />
                 </Button>
               </Link>
@@ -475,7 +475,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
             {!user && (
               <Button
                 variant="outline"
-                className="hidden lg:inline-flex hover:bg-secondary hover:text-secondary-foreground border-border/50 hover:border-primary/30 transition-all duration-300 hover:scale-105"
+                className="hidden lg:inline-flex hover:bg-primary hover:text-primary-foreground border-primary/50 hover:border-primary transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20"
                 onClick={() => setAuthOpen(true)}
               >
                 Giriş / Kayıt
@@ -484,7 +484,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative hover:bg-secondary/20 hover:text-foreground transition-all duration-300 hover:scale-110">
+                <Button variant="ghost" size="icon" className="relative hover:bg-primary/20 hover:text-primary transition-all duration-300 hover:scale-110">
                   <User className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
@@ -553,7 +553,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden hover:bg-secondary/20 transition-all duration-300 hover:scale-110"
+            className="md:hidden hover:bg-primary/20 transition-all duration-300 hover:scale-110"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? (
@@ -569,7 +569,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
           <div className="md:hidden py-4 border-t border-border animate-fade-in">
             <div className="space-y-4">
               <Link to="/products" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="ghost" className="w-full hover:bg-secondary/20 transition-all duration-300">
+                <Button variant="ghost" className="w-full hover:bg-primary/10 transition-all duration-300">
                   Tüm Ürünler
                 </Button>
               </Link>
@@ -589,7 +589,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                     {searchResults.map((product) => (
                       <div
                         key={product.id}
-                        className="flex items-center gap-3 p-3 hover:bg-secondary/20 cursor-pointer transition-all duration-300 border-b border-border last:border-0"
+                        className="flex items-center gap-3 p-3 hover:bg-primary/10 cursor-pointer transition-all duration-300 border-b border-border last:border-0 hover:border-l-2 hover:border-l-primary"
                         onClick={() => {
                           handleSearchResultClick(product.id);
                           setIsMenuOpen(false);
@@ -623,7 +623,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                   variant="ghost"
                   size="sm"
                   onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="hover:bg-secondary/20 transition-all duration-300 hover:scale-110"
+                  className="hover:bg-primary/20 transition-all duration-300 hover:scale-110"
                 >
                   {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                 </Button>
@@ -635,7 +635,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                       setAuthOpen(true);
                       setIsMenuOpen(false);
                     }}
-                    className="hover:bg-secondary/20 transition-all duration-300"
+                    className="hover:bg-primary/20 transition-all duration-300"
                   >
                     <User className="h-5 w-5 mr-2" />
                     Giriş / Kayıt

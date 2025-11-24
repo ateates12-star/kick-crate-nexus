@@ -69,23 +69,27 @@ const HeroSlider = () => {
   const slide = slides[currentSlide];
 
   return (
-    <div className="relative h-[500px] overflow-hidden rounded-lg shadow-card">
+    <div className="relative h-[600px] overflow-hidden rounded-2xl shadow-2xl group">
       <div
-        className="absolute inset-0 bg-cover bg-center transition-all duration-700"
+        className="absolute inset-0 bg-cover bg-center transition-all duration-1000 group-hover:scale-105"
         style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${slide.image_url})`,
+          backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0.3)), url(${slide.image_url})`,
         }}
       >
-        <div className="container mx-auto h-full flex items-center px-4">
-          <div className="max-w-2xl text-white animate-fade-in">
-            <h1 className="text-5xl md:text-7xl font-bold mb-4">
+        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
+        <div className="container mx-auto h-full flex items-center px-4 relative z-10">
+          <div className="max-w-3xl animate-fade-in">
+            <div className="inline-block mb-4 px-4 py-2 bg-primary/20 backdrop-blur-md border border-primary/30 rounded-full">
+              <span className="text-primary font-bold text-sm tracking-wider uppercase">Yeni Sezon</span>
+            </div>
+            <h1 className="text-6xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-2xl leading-tight">
               {slide.title}
             </h1>
-            <p className="text-xl md:text-2xl mb-8 opacity-90">
+            <p className="text-xl md:text-3xl mb-10 text-foreground/90 font-medium leading-relaxed drop-shadow-lg">
               {slide.description}
             </p>
             {slide.button_text && slide.button_link && (
-              <Button size="lg" className="gradient-hero border-0">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground border-0 text-lg px-8 py-6 shadow-2xl hover:shadow-primary/50 hover:scale-105 transition-all duration-300 font-bold">
                 {slide.button_text}
               </Button>
             )}
@@ -98,27 +102,27 @@ const HeroSlider = () => {
         <>
           <button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-full transition-smooth"
+            className="absolute left-6 top-1/2 -translate-y-1/2 bg-primary/90 hover:bg-primary backdrop-blur-md text-primary-foreground p-4 rounded-full transition-all duration-300 hover:scale-110 shadow-lg z-20"
           >
             <ChevronLeft className="h-6 w-6" />
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-full transition-smooth"
+            className="absolute right-6 top-1/2 -translate-y-1/2 bg-primary/90 hover:bg-primary backdrop-blur-md text-primary-foreground p-4 rounded-full transition-all duration-300 hover:scale-110 shadow-lg z-20"
           >
             <ChevronRight className="h-6 w-6" />
           </button>
 
           {/* Dots Indicator */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-3 z-20">
             {slides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={`w-2 h-2 rounded-full transition-smooth ${
+                className={`h-3 rounded-full transition-all duration-300 ${
                   index === currentSlide
-                    ? "bg-white w-8"
-                    : "bg-white/50 hover:bg-white/75"
+                    ? "bg-primary w-12 shadow-lg shadow-primary/50"
+                    : "bg-foreground/30 hover:bg-foreground/50 w-3"
                 }`}
               />
             ))}
