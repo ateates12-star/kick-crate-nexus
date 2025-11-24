@@ -672,7 +672,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium" htmlFor="navbar-signin-email">
-                    E-posta
+                    E-posta Adresi
                   </label>
                   <Input
                     id="navbar-signin-email"
@@ -690,6 +690,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                   <Input
                     id="navbar-signin-password"
                     type="password"
+                    placeholder="Şifrenizi giriniz"
                     value={signInPassword}
                     onChange={(e) => setSignInPassword(e.target.value)}
                     required
@@ -717,7 +718,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium" htmlFor="navbar-first-name">
-                      Ad
+                      Adınız
                     </label>
                     <Input
                       id="navbar-first-name"
@@ -730,7 +731,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium" htmlFor="navbar-last-name">
-                      Soyad
+                      Soyadınız
                     </label>
                     <Input
                       id="navbar-last-name"
@@ -744,7 +745,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium" htmlFor="navbar-signup-email">
-                    E-posta
+                    E-posta Adresi
                   </label>
                   <Input
                     id="navbar-signup-email"
