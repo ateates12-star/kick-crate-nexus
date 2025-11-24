@@ -76,7 +76,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
           brands(name),
           product_images(image_url, is_primary)
         `)
-        .or(`name.ilike.%${localSearchQuery}%,brands.name.ilike.%${localSearchQuery}%`)
+        .ilike("name", `%${localSearchQuery}%`)
         .limit(5);
 
       if (!error && data) {
