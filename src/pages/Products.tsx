@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import ProductCard from "@/components/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -130,15 +131,44 @@ const Products = () => {
             {/* Price Range Filter */}
             <div className="md:col-span-2">
               <label className="text-sm font-medium mb-2 block">
-                Fiyat Aralığı: ₺{priceRange[0]} - ₺{priceRange[1]}
+                Fiyat Aralığı
               </label>
-              <Slider
-                value={priceRange}
-                onValueChange={setPriceRange}
-                max={10000}
-                step={100}
-                className="mt-2"
-              />
+              <div className="space-y-3">
+                <div className="flex gap-4 items-center">
+                  <div className="flex-1">
+                    <Input
+                      type="number"
+                      placeholder="Min"
+                      value={priceRange[0]}
+                      onChange={(e) => {
+                        const val = Math.max(0, Number(e.target.value));
+                        setPriceRange([val, priceRange[1]]);
+                      }}
+                      className="w-full"
+                    />
+                  </div>
+                  <span className="text-muted-foreground">-</span>
+                  <div className="flex-1">
+                    <Input
+                      type="number"
+                      placeholder="Max"
+                      value={priceRange[1]}
+                      onChange={(e) => {
+                        const val = Math.max(priceRange[0], Number(e.target.value));
+                        setPriceRange([priceRange[0], val]);
+                      }}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+                <Slider
+                  value={priceRange}
+                  onValueChange={setPriceRange}
+                  max={10000}
+                  step={100}
+                  className="mt-2"
+                />
+              </div>
             </div>
           </div>
 
