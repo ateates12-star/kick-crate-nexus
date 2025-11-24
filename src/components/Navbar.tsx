@@ -16,6 +16,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NotificationBell from "./NotificationBell";
 import { useCart } from "@/hooks/useCart";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useAdmin } from "@/hooks/useAdmin";
+import { Shield } from "lucide-react";
 
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
@@ -23,6 +25,7 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { items: cartItems } = useCart();
   const { items: favoriteItems } = useFavorites();
+  const { isAdmin } = useAdmin();
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -92,6 +95,14 @@ const Navbar = () => {
                 )}
               </Button>
             </Link>
+
+            {isAdmin && (
+              <Link to="/admin">
+                <Button variant="ghost" size="icon">
+                  <Shield className="h-5 w-5" />
+                </Button>
+              </Link>
+            )}
 
             <Link to="/profile">
               <Button variant="ghost" size="icon">

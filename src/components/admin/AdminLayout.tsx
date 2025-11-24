@@ -50,7 +50,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     { path: "/admin", icon: LayoutDashboard, label: "Dashboard" },
     { path: "/admin/products", icon: Package, label: "Ürünler" },
     { path: "/admin/brands", icon: Tag, label: "Markalar" },
-    { path: "/admin/slider", icon: Image, label: "Slider" },
+    { path: "/admin/sliders", icon: Image, label: "Slider" },
     { path: "/admin/users", icon: Users, label: "Kullanıcılar" },
     { path: "/admin/reviews", icon: MessageSquare, label: "Yorumlar" },
     { path: "/admin/notifications", icon: Bell, label: "Bildirimler" },
