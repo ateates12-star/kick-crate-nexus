@@ -5,6 +5,7 @@ import ProductCard from "@/components/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -136,26 +137,27 @@ const Products = () => {
               <div className="space-y-3">
                 <div className="flex gap-4 items-center">
                   <div className="flex-1">
+                    <Label>Min (₺)</Label>
                     <Input
                       type="number"
-                      placeholder="Min"
+                      placeholder="0"
                       value={priceRange[0]}
                       onChange={(e) => {
-                        const val = Math.max(0, Number(e.target.value));
-                        setPriceRange([val, priceRange[1]]);
+                        const val = Math.max(0, parseInt(e.target.value) || 0);
+                        setPriceRange([val, Math.max(val, priceRange[1])]);
                       }}
                       className="w-full"
                     />
                   </div>
-                  <span className="text-muted-foreground">-</span>
                   <div className="flex-1">
+                    <Label>Max (₺)</Label>
                     <Input
                       type="number"
-                      placeholder="Max"
+                      placeholder="10000"
                       value={priceRange[1]}
                       onChange={(e) => {
-                        const val = Math.max(priceRange[0], Number(e.target.value));
-                        setPriceRange([priceRange[0], val]);
+                        const val = parseInt(e.target.value) || 10000;
+                        setPriceRange([priceRange[0], Math.max(priceRange[0], val)]);
                       }}
                       className="w-full"
                     />
