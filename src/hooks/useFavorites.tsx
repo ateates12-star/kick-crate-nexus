@@ -21,7 +21,7 @@ export const useFavorites = () => {
     fetchFavorites();
 
     const channel = supabase
-      .channel("favorites_changes")
+      .channel(`favorites_changes_${Math.random()}`)
       .on(
         "postgres_changes",
         {

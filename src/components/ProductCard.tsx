@@ -14,8 +14,9 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ id, name, price, imageUrl, brandName }: ProductCardProps) => {
-  const { isFavorite, addToFavorites } = useFavorites();
+  const { isFavorite, addToFavorites, items } = useFavorites();
   const viewCount = useProductViews(id);
+  const isFav = isFavorite(id);
   
   return (
     <Card className="group overflow-hidden border-border hover:shadow-hover transition-smooth">
@@ -37,7 +38,7 @@ const ProductCard = ({ id, name, price, imageUrl, brandName }: ProductCardProps)
           >
             <Heart
               className={`h-5 w-5 ${
-                isFavorite(id) ? "fill-red-500 text-red-500" : ""
+                isFav ? "fill-red-500 text-red-500" : ""
               }`}
             />
           </Button>
