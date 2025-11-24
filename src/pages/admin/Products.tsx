@@ -120,13 +120,11 @@ const Products = () => {
         if (error) throw error;
         productId = editingProduct.id;
 
-        // Delete old images before adding new ones
-        if (imageFile || imageUrl) {
-          await supabase
-            .from('product_images')
-            .delete()
-            .eq('product_id', productId);
-        }
+        // Delete all existing images for this product before adding new ones
+        await supabase
+          .from("product_images")
+          .delete()
+          .eq("product_id", productId);
 
         toast({ title: "Başarılı", description: "Ürün güncellendi." });
       } else {
@@ -144,16 +142,16 @@ const Products = () => {
       // Handle image upload
       let finalImageUrl = imageUrl;
       if (imageFile) {
-        const fileExt = imageFile.name.split('.').pop();
+        const fileExt = imageFile.name.split(".").pop();
         const fileName = `${productId}-${Date.now()}.${fileExt}`;
         const { error: uploadError } = await supabase.storage
-          .from('product-images')
+          .from("product-images")
           .upload(fileName, imageFile);
 
         if (uploadError) throw uploadError;
 
         const { data: urlData } = supabase.storage
-          .from('product-images')
+          .from("product-images")
           .getPublicUrl(fileName);
 
         finalImageUrl = urlData.publicUrl;
@@ -162,7 +160,7 @@ const Products = () => {
       // Save image to product_images table
       if (finalImageUrl) {
         const { error: imageError } = await supabase
-          .from('product_images')
+          .from("product_images")
           .insert({
             product_id: productId,
             image_url: finalImageUrl,

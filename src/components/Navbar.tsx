@@ -36,6 +36,12 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
   const { isAdmin } = useAdmin();
 
   useEffect(() => {
+    if (cartSheetOpen && cartItems.length === 0 && favoriteItems.length === 0) {
+      setCartSheetOpen(false);
+    }
+  }, [cartSheetOpen, cartItems.length, favoriteItems.length]);
+
+  useEffect(() => {
     const fetchSiteLogo = async () => {
       const { data } = await supabase
         .from("site_settings")
