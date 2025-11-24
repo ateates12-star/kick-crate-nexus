@@ -72,6 +72,15 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
             )}
           </Link>
 
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-6">
+            <Link to="/products">
+              <Button variant="ghost" className="text-base">
+                Tüm Ürünler
+              </Button>
+            </Link>
+          </div>
+
           {/* Search Bar - Desktop */}
           <div className="hidden md:flex flex-1 max-w-md mx-8">
             <div className="relative w-full">
