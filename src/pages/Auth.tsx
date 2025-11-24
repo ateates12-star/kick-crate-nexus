@@ -42,9 +42,16 @@ const Auth = () => {
       });
       navigate("/");
     } catch (error: any) {
+      const errorMessages: Record<string, string> = {
+        "Invalid login credentials": "Geçersiz giriş bilgileri",
+        "Email not confirmed": "E-posta adresi doğrulanmamış",
+        "Invalid email or password": "Geçersiz e-posta veya şifre",
+        "User not found": "Kullanıcı bulunamadı",
+        "Invalid email": "Geçersiz e-posta adresi",
+      };
       toast({
         title: "Giriş başarısız",
-        description: error.message,
+        description: errorMessages[error.message] || "Giriş yapılırken bir hata oluştu",
         variant: "destructive",
       });
     } finally {
@@ -76,9 +83,17 @@ const Auth = () => {
         description: "Hesabınız oluşturuldu. Giriş yapabilirsiniz.",
       });
     } catch (error: any) {
+      const errorMessages: Record<string, string> = {
+        "User already registered": "Bu e-posta adresi zaten kayıtlı",
+        "Password should be at least 6 characters": "Şifre en az 6 karakter olmalıdır",
+        "Invalid email": "Geçersiz e-posta adresi",
+        "Email rate limit exceeded": "Çok fazla deneme yaptınız, lütfen daha sonra tekrar deneyin",
+        "Signup requires a valid password": "Kayıt için geçerli bir şifre gereklidir",
+        "Unable to validate email address: invalid format": "E-posta adresi formatı geçersiz",
+      };
       toast({
         title: "Kayıt başarısız",
-        description: error.message,
+        description: errorMessages[error.message] || "Kayıt olurken bir hata oluştu",
         variant: "destructive",
       });
     } finally {
