@@ -37,6 +37,10 @@ interface Review {
   comment: string | null;
   created_at: string;
   user_id: string;
+  profiles: {
+    first_name: string | null;
+    last_name: string | null;
+  } | null;
 }
 
 const ProductDetail = () => {
@@ -118,7 +122,24 @@ const ProductDetail = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setReviews(data || []);
+
+      // Fetch user profiles separately
+      const reviewsWithProfiles = await Promise.all(
+        (data || []).map(async (review) => {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("first_name, last_name")
+            .eq("id", review.user_id)
+            .single();
+
+          return {
+            ...review,
+            profiles: profile,
+          };
+        })
+      );
+
+      setReviews(reviewsWithProfiles);
     } catch (error) {
       console.error("Error fetching reviews:", error);
     }
@@ -409,20 +430,32 @@ const ProductDetail = () => {
               reviews.map((review) => (
                 <Card key={review.id}>
                   <CardContent className="pt-6">
-                    <div className="flex items-center gap-1 mb-2">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-4 w-4 ${
-                            i < review.rating
-                              ? "fill-primary text-primary"
-                              : "text-muted-foreground"
-                          }`}
-                        />
-                      ))}
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <p className="font-semibold">
+                          {review.profiles?.first_name && review.profiles?.last_name
+                            ? `${review.profiles.first_name} ${review.profiles.last_name}`
+                            : "Anonim Kullanıcı"}
+                        </p>
+                        <div className="flex items-center gap-1 mt-1">
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`h-4 w-4 ${
+                                i < review.rating
+                                  ? "fill-primary text-primary"
+                                  : "text-muted-foreground"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(review.created_at).toLocaleDateString("tr-TR")}
+                      </p>
                     </div>
                     {review.comment && (
-                      <p className="text-muted-foreground">{review.comment}</p>
+                      <p className="text-muted-foreground mt-2">{review.comment}</p>
                     )}
                   </CardContent>
                 </Card>

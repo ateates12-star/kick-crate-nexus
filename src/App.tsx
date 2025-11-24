@@ -12,8 +12,13 @@ import Cart from "./pages/Cart";
 import Favorites from "./pages/Favorites";
 import Notifications from "./pages/Notifications";
 import Admin from "./pages/Admin";
+import Products from "./pages/admin/Products";
+import Brands from "./pages/admin/Brands";
+import Sliders from "./pages/admin/Sliders";
+import Users from "./pages/admin/Users";
 import Reviews from "./pages/admin/Reviews";
 import SendNotification from "./pages/admin/SendNotification";
+import Settings from "./pages/admin/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,8 +39,13 @@ const App = () => (
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/products" element={<Products />} />
+            <Route path="/admin/brands" element={<Brands />} />
+            <Route path="/admin/sliders" element={<Sliders />} />
+            <Route path="/admin/users" element={<Users />} />
             <Route path="/admin/reviews" element={<Reviews />} />
             <Route path="/admin/notifications" element={<SendNotification />} />
+            <Route path="/admin/settings" element={<Settings />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
