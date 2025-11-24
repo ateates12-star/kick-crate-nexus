@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, User, Moon, Sun, Menu, X, Trash2 } from "lucide-react";
+import { Search, ShoppingCart, User, Moon, Sun, Menu, X, Trash2, Instagram, Facebook, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -103,9 +103,9 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-xl border-b border-border/60 shadow-elegant supports-[backdrop-filter]:bg-background/70">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-16 items-center justify-between gap-4">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             {siteLogo ? (
@@ -127,24 +127,25 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
           </div>
 
           {/* Search Bar - Desktop */}
-          <div className="hidden md:flex flex-1 max-w-md mx-8">
+          <div className="hidden md:flex flex-1 max-w-xl mx-6">
             <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <div className="absolute inset-0 rounded-full bg-gradient-primary opacity-10 pointer-events-none" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Marka, model veya numara ara..."
-                className="pl-10"
+                className="pl-11 pr-4 rounded-full bg-background/80 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/60"
                 value={localSearchQuery}
                 onChange={(e) => setLocalSearchQuery(e.target.value)}
                 onFocus={() => localSearchQuery.length >= 2 && setShowSearchResults(true)}
                 onBlur={() => setTimeout(() => setShowSearchResults(false), 200)}
               />
               {showSearchResults && searchResults.length > 0 && (
-                <div className="absolute top-full mt-2 w-full bg-card border border-border rounded-lg shadow-lg max-h-96 overflow-y-auto z-50">
+                <div className="absolute top-full mt-3 w-full bg-card border border-border rounded-2xl shadow-elegant max-h-96 overflow-y-auto z-50">
                   {searchResults.map((product) => (
                     <div
                       key={product.id}
-                      className="flex items-center gap-3 p-3 hover:bg-muted cursor-pointer transition-colors border-b border-border last:border-0"
+                      className="flex items-center gap-3 p-3 hover:bg-muted cursor-pointer transition-colors border-b border-border/60 last:border-0"
                       onClick={() => handleSearchResultClick(product.id)}
                     >
                       <img
@@ -154,10 +155,10 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                           "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
                         }
                         alt={product.name}
-                        className="w-16 h-16 object-cover rounded"
+                        className="w-16 h-16 object-cover rounded-lg"
                       />
                       <div className="flex-1">
-                        <p className="font-semibold">{product.name}</p>
+                        <p className="font-semibold line-clamp-1">{product.name}</p>
                         {product.brands && (
                           <p className="text-sm text-muted-foreground">{product.brands.name}</p>
                         )}
@@ -366,26 +367,52 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="relative">
                   <User className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem asChild>
                   <Link to="/profile" className="cursor-pointer">
                     Profilim
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
+                <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                  Bizi Takip Edin
+                </div>
                 <DropdownMenuItem asChild>
-                  <Link to="/contact" className="cursor-pointer">
-                    İletişim
-                  </Link>
+                  <a
+                    href="https://instagram.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <Instagram className="h-4 w-4" />
+                    Instagram
+                  </a>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/faq" className="cursor-pointer">
-                    Sık Sorulan Sorular
-                  </Link>
+                  <a
+                    href="https://twitter.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <Twitter className="h-4 w-4" />
+                    Twitter
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a
+                    href="https://facebook.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <Facebook className="h-4 w-4" />
+                    Facebook
+                  </a>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

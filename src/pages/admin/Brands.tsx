@@ -65,18 +65,21 @@ const Brands = () => {
     try {
       let finalLogoUrl = formData.logo_url;
 
-      // Handle logo upload
+      // Handle logo upload (optional)
       if (logoFile) {
-        const fileExt = logoFile.name.split('.').pop();
-        const fileName = `${Date.now()}-${formData.name.replace(/\s+/g, '-')}.${fileExt}`;
+        const fileExt = logoFile.name.split(".").pop();
+        const fileName = `${Date.now()}-${formData.name.replace(/\s+/g, "-")}.${fileExt}`;
         const { error: uploadError } = await supabase.storage
-          .from('brand-logos')
+          .from("brand-logos")
           .upload(fileName, logoFile);
 
-        if (uploadError) throw uploadError;
+        if (uploadError) {
+          console.error("Logo upload error:", uploadError);
+          throw uploadError;
+        }
 
         const { data: urlData } = supabase.storage
-          .from('brand-logos')
+          .from("brand-logos")
           .getPublicUrl(fileName);
 
         finalLogoUrl = urlData.publicUrl;
@@ -105,11 +108,11 @@ const Brands = () => {
       setOpen(false);
       resetForm();
       fetchBrands();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error:", error);
       toast({
         title: "Hata",
-        description: "İşlem başarısız.",
+        description: error?.message || "İşlem başarısız.",
         variant: "destructive",
       });
     }
