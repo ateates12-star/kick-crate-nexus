@@ -67,22 +67,35 @@ const Brands = () => {
 
       // Handle logo upload (optional)
       if (logoFile) {
-        const fileExt = logoFile.name.split(".").pop();
-        const fileName = `${Date.now()}-${formData.name.replace(/\s+/g, "-")}.${fileExt}`;
-        const { error: uploadError } = await supabase.storage
-          .from("brand-logos")
-          .upload(fileName, logoFile);
+        try {
+          const fileExt = logoFile.name.split(".").pop();
+          const fileName = `${Date.now()}-${formData.name.replace(/\s+/g, "-")}.${fileExt}`;
+          const { error: uploadError } = await supabase.storage
+            .from("brand-logos")
+            .upload(fileName, logoFile);
 
-        if (uploadError) {
-          console.error("Logo upload error:", uploadError);
-          throw uploadError;
+          if (uploadError) {
+            console.error("Logo upload error:", uploadError);
+            toast({
+              title: "Logo yüklenemedi",
+              description: "Marka logonuz yüklenemedi, logosuz devam ediliyor.",
+              variant: "destructive",
+            });
+          } else {
+            const { data: urlData } = supabase.storage
+              .from("brand-logos")
+              .getPublicUrl(fileName);
+
+            finalLogoUrl = urlData.publicUrl;
+          }
+        } catch (error) {
+          console.error("Logo upload unexpected error:", error);
+          toast({
+            title: "Logo yüklenemedi",
+            description: "Lütfen daha sonra tekrar deneyin.",
+            variant: "destructive",
+          });
         }
-
-        const { data: urlData } = supabase.storage
-          .from("brand-logos")
-          .getPublicUrl(fileName);
-
-        finalLogoUrl = urlData.publicUrl;
       }
 
       const brandData = {

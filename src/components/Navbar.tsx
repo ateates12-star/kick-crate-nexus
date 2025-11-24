@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, User, Moon, Sun, Menu, X, Trash2, Instagram, Facebook, Twitter } from "lucide-react";
+import { Search, ShoppingCart, User, Moon, Sun, Menu, X, Trash2, Instagram, Facebook, Twitter, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -21,12 +21,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import NotificationBell from "./NotificationBell";
 import { useCart } from "@/hooks/useCart";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useAdmin } from "@/hooks/useAdmin";
 import { Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface NavbarProps {
   searchQuery?: string;
@@ -45,6 +47,15 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
   const { items: cartItems, removeItem, updateQuantity } = useCart();
   const { items: favoriteItems, removeFromFavorites } = useFavorites();
   const { isAdmin } = useAdmin();
+  const { toast } = useToast();
+  const [authOpen, setAuthOpen] = useState(false);
+  const [isAuthLoading, setIsAuthLoading] = useState(false);
+  const [signInEmail, setSignInEmail] = useState("");
+  const [signInPassword, setSignInPassword] = useState("");
+  const [signUpEmail, setSignUpEmail] = useState("");
+  const [signUpPassword, setSignUpPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
   useEffect(() => {
     if (cartSheetOpen && cartItems.length === 0 && favoriteItems.length === 0) {
@@ -95,6 +106,77 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
     const debounceTimer = setTimeout(searchProducts, 300);
     return () => clearTimeout(debounceTimer);
   }, [localSearchQuery]);
+
+  const handleSignIn = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsAuthLoading(true);
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: signInEmail,
+        password: signInPassword,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Giriş başarılı!",
+        description: "Hoş geldiniz.",
+      });
+      setAuthOpen(false);
+    } catch (error: any) {
+      toast({
+        title: "Giriş başarısız",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsAuthLoading(false);
+    }
+  };
+
+  const handleSignUp = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsAuthLoading(true);
+
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: signUpEmail,
+        password: signUpPassword,
+        options: {
+          data: {
+            first_name: firstName,
+            last_name: lastName,
+          },
+          emailRedirectTo: `${window.location.origin}/`,
+        },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Kayıt başarılı!",
+        description: "Hesabınız oluşturuldu. Giriş yapabilirsiniz.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Kayıt başarısız",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsAuthLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast({
+      title: "Çıkış yapıldı",
+      description: "Tekrar görüşmek üzere.",
+    });
+    navigate("/");
+  };
 
   const handleSearchResultClick = (productId: string) => {
     setShowSearchResults(false);
@@ -179,6 +261,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
               variant="ghost"
               size="icon"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="hover-scale"
             >
               {theme === "dark" ? (
                 <Sun className="h-5 w-5" />
@@ -191,7 +274,7 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
 
             <Sheet open={cartSheetOpen} onOpenChange={setCartSheetOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative">
+                <Button variant="ghost" size="icon" className="relative hover-scale">
                   <ShoppingCart className="h-5 w-5" />
                   {(cartItems.length + favoriteItems.length) > 0 && (
                     <Badge
@@ -359,15 +442,23 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
 
             {isAdmin && (
               <Link to="/admin">
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="hover-scale">
                   <Shield className="h-5 w-5" />
                 </Button>
               </Link>
             )}
 
+            <Button
+              variant="outline"
+              className="hidden lg:inline-flex hover-scale"
+              onClick={() => setAuthOpen(true)}
+            >
+              Giriş / Kayıt
+            </Button>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative">
+                <Button variant="ghost" size="icon" className="relative hover-scale">
                   <User className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
@@ -375,6 +466,16 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                 <DropdownMenuItem asChild>
                   <Link to="/profile" className="cursor-pointer">
                     Profilim
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/contact" className="cursor-pointer">
+                    İletişim
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/faq" className="cursor-pointer">
+                    Sık Sorulan Sorular
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -413,6 +514,10 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                     <Facebook className="h-4 w-4" />
                     Facebook
                   </a>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive">
+                  Çıkış Yap
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -495,17 +600,159 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                 >
                   {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                 </Button>
-                <Link to="/auth">
-                  <Button variant="ghost" size="sm">
-                    <User className="h-5 w-5 mr-2" />
-                    Giriş
-                  </Button>
-                </Link>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setAuthOpen(true);
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <User className="h-5 w-5 mr-2" />
+                  Giriş / Kayıt
+                </Button>
               </div>
             </div>
           </div>
         )}
       </div>
+
+      <Dialog open={authOpen} onOpenChange={setAuthOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="gradient-hero bg-clip-text text-transparent text-2xl">
+              KICKZ
+            </DialogTitle>
+            <DialogDescription>
+              Hesabınıza giriş yapın veya yeni hesap oluşturun
+            </DialogDescription>
+          </DialogHeader>
+          <Tabs defaultValue="signin" className="w-full mt-4">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="signin">Giriş Yap</TabsTrigger>
+              <TabsTrigger value="signup">Kayıt Ol</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="signin" className="pt-4">
+              <form onSubmit={handleSignIn} className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium" htmlFor="navbar-signin-email">
+                    E-posta
+                  </label>
+                  <Input
+                    id="navbar-signin-email"
+                    type="email"
+                    placeholder="ornek@email.com"
+                    value={signInEmail}
+                    onChange={(e) => setSignInEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium" htmlFor="navbar-signin-password">
+                    Şifre
+                  </label>
+                  <Input
+                    id="navbar-signin-password"
+                    type="password"
+                    value={signInPassword}
+                    onChange={(e) => setSignInPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  className="w-full gradient-hero border-0"
+                  disabled={isAuthLoading}
+                >
+                  {isAuthLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Giriş yapılıyor...
+                    </>
+                  ) : (
+                    "Giriş Yap"
+                  )}
+                </Button>
+              </form>
+            </TabsContent>
+
+            <TabsContent value="signup" className="pt-4">
+              <form onSubmit={handleSignUp} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium" htmlFor="navbar-first-name">
+                      Ad
+                    </label>
+                    <Input
+                      id="navbar-first-name"
+                      type="text"
+                      placeholder="Adınız"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium" htmlFor="navbar-last-name">
+                      Soyad
+                    </label>
+                    <Input
+                      id="navbar-last-name"
+                      type="text"
+                      placeholder="Soyadınız"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium" htmlFor="navbar-signup-email">
+                    E-posta
+                  </label>
+                  <Input
+                    id="navbar-signup-email"
+                    type="email"
+                    placeholder="ornek@email.com"
+                    value={signUpEmail}
+                    onChange={(e) => setSignUpEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium" htmlFor="navbar-signup-password">
+                    Şifre
+                  </label>
+                  <Input
+                    id="navbar-signup-password"
+                    type="password"
+                    placeholder="En az 6 karakter"
+                    value={signUpPassword}
+                    onChange={(e) => setSignUpPassword(e.target.value)}
+                    required
+                    minLength={6}
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  className="w-full gradient-hero border-0"
+                  disabled={isAuthLoading}
+                >
+                  {isAuthLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Kayıt yapılıyor...
+                    </>
+                  ) : (
+                    "Kayıt Ol"
+                  )}
+                </Button>
+              </form>
+            </TabsContent>
+          </Tabs>
+        </DialogContent>
+      </Dialog>
     </nav>
   );
 };
