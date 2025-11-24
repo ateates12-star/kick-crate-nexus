@@ -297,25 +297,31 @@ const Profile = () => {
                 {favoriteItems.map((item) => (
                   <div
                     key={item.id}
-                    className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 border rounded-lg"
+                    className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 border rounded-lg hover:bg-accent/50 transition-colors"
                   >
-                    <img
-                      src={
-                        item.products.product_images.find(
-                          (img) => img.is_primary
-                        )?.image_url || item.products.product_images[0]?.image_url
-                      }
-                      alt={item.products.name}
-                      className="w-20 h-20 object-cover rounded"
-                    />
+                    <Link to={`/product/${item.product_id}`} className="shrink-0">
+                      <img
+                        src={
+                          item.products.product_images?.find(
+                            (img) => img.is_primary
+                          )?.image_url || 
+                          item.products.product_images?.[0]?.image_url ||
+                          "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
+                        }
+                        alt={item.products.name}
+                        className="w-20 h-20 object-cover rounded hover:opacity-80 transition-opacity cursor-pointer"
+                      />
+                    </Link>
                     <div className="flex-1">
                       <Link to={`/product/${item.product_id}`}>
-                        <h4 className="font-semibold hover:underline">
+                        <h4 className="font-semibold hover:text-primary transition-colors">
                           {item.products.name}
                         </h4>
                       </Link>
                       <p className="text-lg font-bold mt-1 text-primary">
-                        ₺{item.products.price.toLocaleString("tr-TR")}
+                        ₺{item.products.price.toLocaleString("tr-TR", {
+                          minimumFractionDigits: 2,
+                        })}
                       </p>
                     </div>
                     <Button
