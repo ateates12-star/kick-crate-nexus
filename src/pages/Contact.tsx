@@ -6,17 +6,17 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <Navbar />
-      <main className="container mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4 text-foreground animate-fade-in">
+      <main className="container mx-auto px-4 py-8 sm:py-12">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-foreground animate-fade-in">
             İletişim
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
             Sorularınız, önerileriniz veya geri bildirimleriniz için bizimle iletişime geçebilirsiniz.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
           {/* Email Card */}
           <Card className="backdrop-blur-sm bg-card/95 hover:shadow-elegant transition-smooth border-border/60 hover:border-primary/30">
             <CardHeader>
@@ -93,7 +93,7 @@ const Contact = () => {
           </Card>
 
           {/* Working Hours Card - Full Width */}
-          <Card className="backdrop-blur-sm bg-card/95 border-border/60 md:col-span-2 lg:col-span-3">
+          <Card className="backdrop-blur-sm bg-card/95 border-border/60 sm:col-span-2 lg:col-span-3">
             <CardHeader>
               <CardTitle className="flex items-center gap-3">
                 <div className="p-3 rounded-full bg-primary shadow-lg">
@@ -103,7 +103,7 @@ const Contact = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid sm:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
                     <span className="font-medium">Pazartesi - Cuma</span>

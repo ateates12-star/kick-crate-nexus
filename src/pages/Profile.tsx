@@ -125,25 +125,25 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <Navbar />
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-bold">Profilim</h1>
-          <Button variant="outline" onClick={handleLogout}>
+      <main className="container mx-auto px-4 py-8 max-w-6xl">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+          <h1 className="text-3xl sm:text-4xl font-bold text-foreground">Profilim</h1>
+          <Button variant="outline" onClick={handleLogout} className="w-full sm:w-auto">
             Çıkış Yap
           </Button>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 mb-6">
           {/* Personal Info */}
           <Card className="backdrop-blur-sm bg-card/95 shadow-elegant border-border/60">
             <CardHeader>
-              <CardTitle className="flex items-center text-xl">
+              <CardTitle className="flex items-center text-lg sm:text-xl">
                 <User className="h-5 w-5 mr-2 text-primary" />
                 Kişisel Bilgiler
               </CardTitle>
             </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label>Adınız</Label>
                 <Input
@@ -175,7 +175,7 @@ const Profile = () => {
           {/* Phone */}
           <Card className="backdrop-blur-sm bg-card/95 shadow-elegant border-border/60">
             <CardHeader>
-              <CardTitle className="flex items-center text-xl">
+              <CardTitle className="flex items-center text-lg sm:text-xl">
                 <Phone className="h-5 w-5 mr-2 text-primary" />
                 İletişim Bilgileri
               </CardTitle>
@@ -207,7 +207,7 @@ const Profile = () => {
         {/* Address */}
         <Card className="mb-6 backdrop-blur-sm bg-card/95 shadow-elegant border-border/60">
           <CardHeader>
-            <CardTitle className="flex items-center text-xl">
+            <CardTitle className="flex items-center text-lg sm:text-xl">
               <MapPin className="h-5 w-5 mr-2 text-primary" />
               Teslimat Adresi
             </CardTitle>
@@ -223,7 +223,7 @@ const Profile = () => {
                 placeholder="Ev, İş, vb."
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label>İl</Label>
                 <Input
@@ -282,7 +282,7 @@ const Profile = () => {
         {/* Favorites */}
         <Card className="mb-6 backdrop-blur-sm bg-card/95 shadow-elegant border-border/60">
           <CardHeader>
-            <CardTitle className="flex items-center text-xl">
+            <CardTitle className="flex items-center text-lg sm:text-xl">
               <Heart className="h-5 w-5 mr-2 text-primary" />
               Favori Ürünlerim
             </CardTitle>
@@ -297,7 +297,7 @@ const Profile = () => {
                 {favoriteItems.map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center gap-4 p-4 border rounded-lg"
+                    className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 border rounded-lg"
                   >
                     <img
                       src={
@@ -314,7 +314,7 @@ const Profile = () => {
                           {item.products.name}
                         </h4>
                       </Link>
-                      <p className="text-lg font-bold mt-1">
+                      <p className="text-lg font-bold mt-1 text-primary">
                         ₺{item.products.price.toLocaleString("tr-TR")}
                       </p>
                     </div>
@@ -322,6 +322,7 @@ const Profile = () => {
                       variant="destructive"
                       size="sm"
                       onClick={() => removeFromFavorites(item.id)}
+                      className="w-full sm:w-auto"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

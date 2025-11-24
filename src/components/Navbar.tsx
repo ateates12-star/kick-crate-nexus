@@ -1,6 +1,6 @@
 import { useState, useEffect, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, User, Moon, Sun, Menu, X, Trash2, Instagram, Facebook, Twitter, Loader2 } from "lucide-react";
+import { Search, ShoppingCart, User, Moon, Sun, Menu, X, Trash2, Instagram, Facebook, Twitter, Loader2, UserCircle, Mail, HelpCircle, LogOut, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -226,8 +226,13 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
             <Link to="/products">
-              <Button variant="ghost" className="text-base">
-                Tüm Ürünler
+              <Button variant="ghost" className="text-base font-bold relative group overflow-hidden">
+                <span className="relative z-10 flex items-center gap-2">
+                  <Sparkles className="h-4 w-4" />
+                  Tüm Ürünler
+                </span>
+                <span className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl"></span>
+                <span className="absolute inset-0 border-2 border-primary rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></span>
               </Button>
             </Link>
           </div>
@@ -488,62 +493,79 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                   <User className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuContent align="end" className="w-64">
                 <DropdownMenuItem asChild>
-                  <Link to="/profile" className="cursor-pointer">
-                    Profilim
+                  <Link to="/profile" className="cursor-pointer flex items-center gap-3 py-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <UserCircle className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-semibold">Profilim</span>
+                      <span className="text-xs text-muted-foreground">Hesap ayarlarını yönet</span>
+                    </div>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/contact" className="cursor-pointer">
-                    İletişim
+                  <Link to="/contact" className="cursor-pointer flex items-center gap-3 py-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Mail className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-semibold">İletişim</span>
+                      <span className="text-xs text-muted-foreground">Bize ulaşın</span>
+                    </div>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/faq" className="cursor-pointer">
-                    Sık Sorulan Sorular
+                  <Link to="/faq" className="cursor-pointer flex items-center gap-3 py-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <HelpCircle className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-semibold">Sık Sorulan Sorular</span>
+                      <span className="text-xs text-muted-foreground">Yardım ve destek</span>
+                    </div>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                <div className="px-3 py-2 text-xs font-bold text-primary uppercase tracking-wider">
                   Bizi Takip Edin
                 </div>
-                <DropdownMenuItem asChild>
+                <div className="grid grid-cols-3 gap-2 px-3 py-2">
                   <a
                     href="https://instagram.com"
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-2 cursor-pointer"
+                    className="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-primary/10 transition-colors cursor-pointer group"
                   >
-                    <Instagram className="h-4 w-4" />
-                    Instagram
+                    <Instagram className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <span className="text-xs font-medium">Instagram</span>
                   </a>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
                   <a
                     href="https://twitter.com"
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-2 cursor-pointer"
+                    className="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-primary/10 transition-colors cursor-pointer group"
                   >
-                    <Twitter className="h-4 w-4" />
-                    Twitter
+                    <Twitter className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <span className="text-xs font-medium">Twitter</span>
                   </a>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
                   <a
                     href="https://facebook.com"
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-2 cursor-pointer"
+                    className="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-primary/10 transition-colors cursor-pointer group"
                   >
-                    <Facebook className="h-4 w-4" />
-                    Facebook
+                    <Facebook className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <span className="text-xs font-medium">Facebook</span>
                   </a>
-                </DropdownMenuItem>
+                </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive">
-                  Çıkış Yap
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive py-3 flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-destructive/10">
+                    <LogOut className="h-5 w-5" />
+                  </div>
+                  <span className="font-semibold">Çıkış Yap</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -569,8 +591,12 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
           <div className="md:hidden py-4 border-t border-border animate-fade-in">
             <div className="space-y-4">
               <Link to="/products" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="ghost" className="w-full hover:bg-primary/10 transition-all duration-300">
-                  Tüm Ürünler
+                <Button variant="ghost" className="w-full hover:bg-primary/10 transition-all duration-300 relative group">
+                  <span className="flex items-center gap-2">
+                    <Sparkles className="h-4 w-4" />
+                    Tüm Ürünler
+                  </span>
+                  <span className="absolute inset-0 border-2 border-primary rounded-lg opacity-0 group-hover:opacity-50 transition-opacity"></span>
                 </Button>
               </Link>
               <div className="relative">

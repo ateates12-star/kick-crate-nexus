@@ -117,11 +117,11 @@ const Products = () => {
 
         {/* Filters */}
         <div className="backdrop-blur-md bg-card/50 rounded-2xl shadow-elegant p-6 mb-8 border border-border/50 hover:border-primary/30 transition-all">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
             {/* Brand Filter */}
             <div>
               <label className="text-sm font-semibold mb-3 block flex items-center gap-2">
-                <div className="h-1 w-1 rounded-full bg-gradient-primary" />
+                <div className="h-1 w-1 rounded-full bg-primary" />
                 Marka
               </label>
               <Select value={selectedBrand} onValueChange={setSelectedBrand}>
@@ -140,9 +140,9 @@ const Products = () => {
             </div>
 
             {/* Price Range Filter */}
-            <div className="md:col-span-2">
+            <div className="sm:col-span-2 lg:col-span-2">
               <label className="text-sm font-semibold mb-3 block flex items-center gap-2">
-                <div className="h-1 w-1 rounded-full bg-gradient-primary" />
+                <div className="h-1 w-1 rounded-full bg-primary" />
                 Fiyat Aralığı
               </label>
               <div className="space-y-4">

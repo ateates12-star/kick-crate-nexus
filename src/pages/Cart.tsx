@@ -24,12 +24,12 @@ const Cart = () => {
       <div className="min-h-screen bg-gradient-subtle">
         <Navbar />
         <div className="container mx-auto px-4 py-8 text-center">
-          <h1 className="text-3xl font-bold mb-4">Sepetiniz Boş</h1>
-          <p className="text-muted-foreground mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-foreground">Sepetiniz Boş</h1>
+          <p className="text-muted-foreground mb-6 text-sm sm:text-base">
             Henüz sepetinize ürün eklemediniz.
           </p>
           <Link to="/">
-            <Button className="gradient-hero border-0">Alışverişe Başla</Button>
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground border-0 w-full sm:w-auto">Alışverişe Başla</Button>
           </Link>
         </div>
       </div>
@@ -40,16 +40,16 @@ const Cart = () => {
     <div className="min-h-screen bg-gradient-subtle">
       <Navbar />
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Sepetim</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-foreground">Sepetim</h1>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => {
               return (
                 <Card key={item.id}>
                   <CardContent className="p-4">
-                    <div className="flex gap-4">
+                    <div className="flex flex-col sm:flex-row gap-4">
                       <img
                         src={
                           item.products.product_images?.find(
@@ -59,24 +59,25 @@ const Cart = () => {
                           "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
                         }
                         alt={item.products.name}
-                        className="w-24 h-24 object-cover rounded"
+                        className="w-full sm:w-24 h-48 sm:h-24 object-cover rounded"
                       />
                       <div className="flex-1">
                         <h3 className="font-semibold">{item.products.name}</h3>
                         <p className="text-sm text-muted-foreground">
                           Numara: {item.size}
                         </p>
-                        <p className="text-lg font-bold mt-2">
+                        <p className="text-lg font-bold mt-2 text-primary">
                           ₺{item.products.price.toLocaleString("tr-TR", {
                             minimumFractionDigits: 2,
                           })}
                         </p>
                       </div>
-                      <div className="flex flex-col items-end justify-between">
+                      <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-between">
                         <Button
                           variant="ghost"
                           size="icon"
                           onClick={() => removeItem(item.id)}
+                          className="hover:bg-destructive/10 hover:text-destructive"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

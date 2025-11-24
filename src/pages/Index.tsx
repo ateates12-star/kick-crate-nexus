@@ -120,16 +120,16 @@ const Index = () => {
 
         {/* Featured Products Section */}
         <section className="mb-16">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
             <div>
-              <h2 className="text-4xl font-bold mb-2 text-foreground">Öne Çıkan Ürünler</h2>
-              <p className="text-muted-foreground">En beğenilen ve trend ürünlerimizi keşfedin</p>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-2 text-foreground">Öne Çıkan Ürünler</h2>
+              <p className="text-muted-foreground text-sm sm:text-base">En beğenilen ve trend ürünlerimizi keşfedin</p>
             </div>
             <Link to="/products">
-              <Button variant="outline" className="hover:bg-primary hover:text-primary-foreground border-primary/50 hover:border-primary transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20">Tümünü Gör</Button>
+              <Button variant="outline" className="w-full sm:w-auto hover:bg-primary hover:text-primary-foreground border-primary/50 hover:border-primary transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20">Tümünü Gör</Button>
             </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {isLoading ? (
               Array.from({ length: 4 }).map((_, i) => (
                 <div
@@ -165,15 +165,15 @@ const Index = () => {
         <section className="mb-16 relative">
           <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent rounded-3xl -z-10" />
           <div className="text-center mb-12 pt-8">
-            <h2 className="text-5xl font-bold mb-4 text-foreground animate-fade-in">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-foreground animate-fade-in">
               Markalar
             </h2>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-muted-foreground text-sm sm:text-base md:text-lg px-4">
               Dünyanın en iyi spor ayakkabı markalarını keşfedin
             </p>
           </div>
-          <div className="flex justify-center w-full px-4">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 max-w-7xl w-full">
+          <div className="flex justify-center w-full px-2 sm:px-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6 max-w-7xl w-full">
               {brands.map((brand, index) => (
                 <div
                   key={brand.id}
