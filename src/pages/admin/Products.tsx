@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Upload, X } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
 interface Product {
@@ -52,6 +52,9 @@ const Products = () => {
     brand_id: "",
     is_featured: false,
   });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState("");
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -106,6 +109,8 @@ const Products = () => {
         is_featured: formData.is_featured,
       };
 
+      let productId: string;
+
       if (editingProduct) {
         const { error } = await supabase
           .from("products")
@@ -113,12 +118,50 @@ const Products = () => {
           .eq("id", editingProduct.id);
 
         if (error) throw error;
+        productId = editingProduct.id;
         toast({ title: "Başarılı", description: "Ürün güncellendi." });
       } else {
-        const { error } = await supabase.from("products").insert(productData);
+        const { data, error } = await supabase
+          .from("products")
+          .insert(productData)
+          .select()
+          .single();
 
         if (error) throw error;
+        productId = data.id;
         toast({ title: "Başarılı", description: "Ürün eklendi." });
+      }
+
+      // Handle image upload
+      let finalImageUrl = imageUrl;
+      if (imageFile) {
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = `${productId}-${Date.now()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage
+          .from('product-images')
+          .upload(fileName, imageFile);
+
+        if (uploadError) throw uploadError;
+
+        const { data: urlData } = supabase.storage
+          .from('product-images')
+          .getPublicUrl(fileName);
+
+        finalImageUrl = urlData.publicUrl;
+      }
+
+      // Save image to product_images table
+      if (finalImageUrl) {
+        const { error: imageError } = await supabase
+          .from('product_images')
+          .insert({
+            product_id: productId,
+            image_url: finalImageUrl,
+            is_primary: true,
+            display_order: 0,
+          });
+
+        if (imageError) throw imageError;
       }
 
       setOpen(false);
@@ -132,6 +175,25 @@ const Products = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      setImageUrl("");
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const clearImage = () => {
+    setImageFile(null);
+    setImageUrl("");
+    setImagePreview(null);
   };
 
   const handleDelete = async (id: string) => {
@@ -178,6 +240,7 @@ const Products = () => {
       brand_id: "",
       is_featured: false,
     });
+    clearImage();
   };
 
   if (loading) {
@@ -266,6 +329,61 @@ const Products = () => {
                   }
                 />
                 <Label>Öne Çıkan Ürün</Label>
+              </div>
+              <div>
+                <Label>Ürün Resmi</Label>
+                <div className="space-y-4 mt-2">
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                      <Label className="text-sm text-muted-foreground">Resim URL</Label>
+                      <Input
+                        type="url"
+                        value={imageUrl}
+                        onChange={(e) => {
+                          setImageUrl(e.target.value);
+                          setImageFile(null);
+                          setImagePreview(null);
+                        }}
+                        placeholder="https://example.com/image.jpg"
+                        disabled={!!imageFile}
+                      />
+                    </div>
+                    <div className="flex items-end">
+                      <Label
+                        htmlFor="product-image-upload"
+                        className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+                      >
+                        <Upload className="h-4 w-4 mr-2" />
+                        Yükle
+                      </Label>
+                      <input
+                        id="product-image-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageFileChange}
+                      />
+                    </div>
+                  </div>
+                  {(imagePreview || imageUrl) && (
+                    <div className="relative inline-block">
+                      <img
+                        src={imagePreview || imageUrl}
+                        alt="Önizleme"
+                        className="h-32 w-32 object-cover rounded-lg"
+                      />
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="destructive"
+                        className="absolute -top-2 -right-2"
+                        onClick={clearImage}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="flex gap-2">
                 <Button type="submit" className="flex-1">

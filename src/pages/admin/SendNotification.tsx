@@ -26,7 +26,7 @@ const SendNotification = () => {
   const [selectedUser, setSelectedUser] = useState<string>("all");
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-  const [type, setType] = useState("info");
+  const [type, setType] = useState<"kampanya" | "bilgi" | "önemli">("bilgi");
   const [sending, setSending] = useState(false);
   const { toast } = useToast();
 
@@ -92,7 +92,7 @@ const SendNotification = () => {
       setTitle("");
       setMessage("");
       setSelectedUser("all");
-      setType("info");
+      setType("bilgi");
     } catch (error) {
       console.error("Error sending notification:", error);
       toast({
@@ -133,15 +133,17 @@ const SendNotification = () => {
 
           <div>
             <Label>Bildirim Türü</Label>
-            <Select value={type} onValueChange={setType}>
+            <Select 
+              value={type} 
+              onValueChange={(value: "kampanya" | "bilgi" | "önemli") => setType(value)}
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="info">Bilgi</SelectItem>
-                <SelectItem value="success">Başarı</SelectItem>
-                <SelectItem value="warning">Uyarı</SelectItem>
-                <SelectItem value="error">Hata</SelectItem>
+                <SelectItem value="bilgi">Bilgi</SelectItem>
+                <SelectItem value="kampanya">Kampanya</SelectItem>
+                <SelectItem value="önemli">Önemli</SelectItem>
               </SelectContent>
             </Select>
           </div>

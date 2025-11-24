@@ -246,6 +246,7 @@ export type Database = {
           created_at: string
           first_name: string | null
           id: string
+          last_active_at: string | null
           last_name: string | null
           payment_method: Json | null
           phone: string | null
@@ -256,6 +257,7 @@ export type Database = {
           created_at?: string
           first_name?: string | null
           id: string
+          last_active_at?: string | null
           last_name?: string | null
           payment_method?: Json | null
           phone?: string | null
@@ -266,6 +268,7 @@ export type Database = {
           created_at?: string
           first_name?: string | null
           id?: string
+          last_active_at?: string | null
           last_name?: string | null
           payment_method?: Json | null
           phone?: string | null
