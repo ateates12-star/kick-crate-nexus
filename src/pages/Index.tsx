@@ -126,7 +126,7 @@ const Index = () => {
               <p className="text-muted-foreground">En beğenilen ve trend ürünlerimizi keşfedin</p>
             </div>
             <Link to="/products">
-              <Button variant="outline">Tümünü Gör</Button>
+              <Button variant="outline" className="hover:bg-secondary hover:text-secondary-foreground border-border/50 hover:border-primary/30 transition-all duration-300 hover:scale-105">Tümünü Gör</Button>
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -181,10 +181,10 @@ const Index = () => {
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <Card
-                    className="cursor-pointer hover:shadow-elegant hover:scale-110 transition-all duration-300 group w-full backdrop-blur-md bg-gradient-to-br from-card/80 to-card/40 border-2 border-transparent hover:border-primary/20 overflow-hidden relative"
+                    className="cursor-pointer hover:shadow-2xl hover:scale-110 transition-all duration-500 group w-full backdrop-blur-md bg-gradient-to-br from-card/80 to-card/40 border-2 border-border/50 hover:border-primary/30 overflow-hidden relative hover:-translate-y-1"
                     onClick={() => handleBrandClick(brand.id)}
                   >
-                    <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-10 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-5 transition-opacity duration-500" />
                     <CardContent className="p-8 flex flex-col items-center justify-center aspect-square relative">
                       {brand.logo_url ? (
                         <div className="relative">
