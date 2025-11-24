@@ -264,9 +264,9 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 sm:space-x-3 hover-scale">
             {siteLogo ? (
-              <img src={siteLogo} alt="Logo" className="h-8 sm:h-10 md:h-12 object-contain" />
+              <img src={siteLogo} alt="Logo" className="h-10 sm:h-12 md:h-16 lg:h-20 object-contain" />
             ) : (
-              <div className="text-lg sm:text-2xl md:text-3xl font-bold gradient-hero bg-clip-text text-transparent">
+              <div className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-black gradient-hero bg-clip-text text-transparent">
                 KICKZ
               </div>
             )}
@@ -275,34 +275,48 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
             <Link to="/products">
-              <Button variant="ghost" className="text-sm lg:text-base font-bold relative group overflow-hidden">
-                <span className="relative z-10 flex items-center gap-1.5 sm:gap-2">
-                  <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <Button variant="ghost" className="text-sm lg:text-base font-bold relative group overflow-hidden px-6 py-2.5">
+                <span className="relative z-10 flex items-center gap-1.5 sm:gap-2 text-foreground group-hover:text-white transition-colors duration-300">
+                  <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 group-hover:animate-spin" />
                   <span className="hidden sm:inline">Tüm Ürünler</span>
                   <span className="sm:hidden">Ürünler</span>
                 </span>
-                <span className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl"></span>
-                <span className="absolute inset-0 border-2 border-primary rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></span>
+                {/* Glowing background */}
+                <span className="absolute inset-0 bg-gradient-to-r from-primary via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></span>
+                {/* Solid background */}
+                <span className="absolute inset-0 bg-gradient-to-r from-primary via-purple-500 to-pink-500 opacity-0 group-hover:opacity-90 transition-opacity duration-300 rounded-lg"></span>
+                {/* Animated border */}
+                <span className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <span className="absolute inset-0 rounded-lg border-2 border-transparent bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-border animate-pulse"></span>
+                </span>
+                {/* Moving shine effect */}
+                <span className="absolute inset-0 rounded-lg overflow-hidden">
+                  <span className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12"></span>
+                </span>
               </Button>
             </Link>
           </div>
 
           {/* Search Bar - Desktop */}
           <div className="hidden md:flex flex-1 max-w-md lg:max-w-xl mx-3 lg:mx-6">
-            <div className="relative w-full">
-              <div className="absolute inset-0 rounded-full bg-gradient-primary opacity-10 pointer-events-none" />
-              <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Ara..."
-                className="pl-9 sm:pl-11 pr-3 sm:pr-4 rounded-full bg-background/80 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/60 text-sm"
-                value={localSearchQuery}
-                onChange={(e) => setLocalSearchQuery(e.target.value)}
-                onFocus={() => localSearchQuery.length >= 2 && setShowSearchResults(true)}
-                onBlur={() => setTimeout(() => setShowSearchResults(false), 200)}
-              />
+            <div className="relative w-full group">
+              {/* Glowing border effect */}
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-full opacity-0 group-focus-within:opacity-75 blur transition duration-300"></div>
+              <div className="relative">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/20 via-purple-500/20 to-pink-500/20 pointer-events-none opacity-0 group-focus-within:opacity-100 transition-opacity duration-300" />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-300 z-10" />
+                <Input
+                  type="search"
+                  placeholder="Marka, model veya numara ara..."
+                  className="relative pl-11 pr-4 h-11 rounded-full bg-background/90 backdrop-blur-sm border-2 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:border-primary text-sm transition-all duration-300"
+                  value={localSearchQuery}
+                  onChange={(e) => setLocalSearchQuery(e.target.value)}
+                  onFocus={() => localSearchQuery.length >= 2 && setShowSearchResults(true)}
+                  onBlur={() => setTimeout(() => setShowSearchResults(false), 200)}
+                />
+              </div>
               {showSearchResults && searchResults.length > 0 && (
-                <div className="absolute top-full mt-3 w-full bg-card border border-border rounded-2xl shadow-elegant max-h-96 overflow-y-auto z-50">
+                <div className="absolute top-full mt-3 w-full bg-card/95 backdrop-blur-xl border-2 border-primary/20 rounded-2xl shadow-2xl shadow-primary/10 max-h-96 overflow-y-auto z-50 animate-fade-in">
                   {searchResults.map((product) => (
                     <div
                       key={product.id}
@@ -663,11 +677,14 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
           <div className="md:hidden py-3 sm:py-4 border-t border-border animate-fade-in">
             <div className="space-y-3 sm:space-y-4">
               <Link to="/products" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="ghost" className="w-full hover:bg-primary/10 transition-all duration-300 relative group text-sm sm:text-base">
-                  <span className="flex items-center gap-2">
-                    <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <Button variant="ghost" className="w-full hover:bg-primary/10 transition-all duration-300 relative group text-sm sm:text-base overflow-hidden">
+                  <span className="relative z-10 flex items-center gap-2 text-foreground group-hover:text-white transition-colors duration-300">
+                    <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 group-hover:animate-spin" />
                     Tüm Ürünler
                   </span>
+                  {/* Mobile neon effect */}
+                  <span className="absolute inset-0 bg-gradient-to-r from-primary via-purple-500 to-pink-500 opacity-0 group-hover:opacity-90 transition-opacity duration-300 rounded-lg"></span>
+                  <span className="absolute inset-0 bg-gradient-to-r from-primary via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></span>
                   <span className="absolute inset-0 border-2 border-primary rounded-lg opacity-0 group-hover:opacity-50 transition-opacity"></span>
                 </Button>
               </Link>

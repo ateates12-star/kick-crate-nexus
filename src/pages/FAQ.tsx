@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import {
   Accordion,
   AccordionContent,
@@ -154,6 +155,8 @@ const FAQ = () => {
           </CardContent>
         </Card>
       </main>
+      
+      <Footer />
     </div>
   );
 };
