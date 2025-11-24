@@ -1,8 +1,9 @@
-import { Heart } from "lucide-react";
+import { Heart, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useProductViews } from "@/hooks/useProductViews";
 
 interface ProductCardProps {
   id: string;
@@ -14,6 +15,8 @@ interface ProductCardProps {
 
 const ProductCard = ({ id, name, price, imageUrl, brandName }: ProductCardProps) => {
   const { isFavorite, addToFavorites } = useFavorites();
+  const viewCount = useProductViews(id);
+  
   return (
     <Card className="group overflow-hidden border-border hover:shadow-hover transition-smooth">
       <Link to={`/product/${id}`}>
@@ -46,9 +49,13 @@ const ProductCard = ({ id, name, price, imageUrl, brandName }: ProductCardProps)
             <p className="text-sm text-muted-foreground mb-1">{brandName}</p>
           )}
           <h3 className="font-semibold text-lg mb-2 line-clamp-2">{name}</h3>
-          <p className="text-2xl font-bold gradient-hero bg-clip-text text-transparent">
+          <p className="text-2xl font-bold text-primary">
             ₺{price.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
           </p>
+          <div className="flex items-center gap-1 mt-2 text-sm text-muted-foreground">
+            <Eye className="h-4 w-4" />
+            <span>{viewCount} kişi inceledi</span>
+          </div>
         </Link>
       </CardContent>
       <CardFooter className="p-4 pt-0">
