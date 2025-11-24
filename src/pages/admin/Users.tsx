@@ -34,7 +34,7 @@ interface User {
 interface UserRole {
   id: string;
   user_id: string;
-  role: "admin" | "user";
+  role: "admin" | "user" | "banned";
 }
 
 const Users = () => {
@@ -81,7 +81,7 @@ const Users = () => {
     }
   };
 
-  const handleRoleChange = async (userId: string, newRole: "admin" | "user") => {
+  const handleRoleChange = async (userId: string, newRole: "admin" | "user" | "banned") => {
     try {
       const { error } = await supabase
         .from("user_roles")
@@ -271,12 +271,24 @@ const Users = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-wrap justify-end">
-                    <Badge variant={roles[user.id] === "admin" ? "default" : "secondary"}>
-                      {roles[user.id] === "admin" ? "Admin" : "Kullanıcı"}
+                    <Badge 
+                      variant={
+                        roles[user.id] === "admin" 
+                          ? "default" 
+                          : roles[user.id] === "banned" 
+                          ? "destructive" 
+                          : "secondary"
+                      }
+                    >
+                      {roles[user.id] === "admin" 
+                        ? "Admin" 
+                        : roles[user.id] === "banned" 
+                        ? "Yasaklı" 
+                        : "Kullanıcı"}
                     </Badge>
                     <Select
                       value={roles[user.id] || "user"}
-                      onValueChange={(value) => handleRoleChange(user.id, value as "admin" | "user")}
+                      onValueChange={(value) => handleRoleChange(user.id, value as "admin" | "user" | "banned")}
                     >
                       <SelectTrigger className="w-32">
                         <SelectValue />
@@ -284,6 +296,7 @@ const Users = () => {
                       <SelectContent>
                         <SelectItem value="user">Kullanıcı</SelectItem>
                         <SelectItem value="admin">Admin</SelectItem>
+                        <SelectItem value="banned">Yasaklı</SelectItem>
                       </SelectContent>
                     </Select>
                     <Button

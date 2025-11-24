@@ -29,12 +29,37 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: signInEmail,
         password: signInPassword,
       });
 
       if (error) throw error;
+
+      // Kullanıcının rolünü kontrol et
+      if (data.user) {
+        const { data: roleData, error: roleError } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", data.user.id)
+          .maybeSingle();
+
+        if (roleError) {
+          console.error("Role check error:", roleError);
+        }
+
+        // Eğer kullanıcı yasaklıysa
+        if (roleData?.role === "banned") {
+          await supabase.auth.signOut();
+          toast({
+            title: "Hesabınız yasaklandı",
+            description: "Lütfen müşteri hizmetleri ile iletişime geçin.",
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
+        }
+      }
 
       toast({
         title: "Giriş başarılı!",
