@@ -9,14 +9,18 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useFavorites } from "@/hooks/useFavorites";
-import { User, Phone, MapPin, CreditCard, Trash2, Heart } from "lucide-react";
+import { User, Phone, MapPin, Trash2, Heart } from "lucide-react";
 
 interface Profile {
   first_name: string | null;
   last_name: string | null;
   phone: string | null;
   address: string | null;
-  payment_method: any;
+  address_title?: string | null;
+  city?: string | null;
+  district?: string | null;
+  neighborhood?: string | null;
+  postal_code?: string | null;
 }
 
 const Profile = () => {
@@ -76,7 +80,11 @@ const Profile = () => {
           last_name: profile?.last_name,
           phone: profile?.phone,
           address: profile?.address,
-          payment_method: profile?.payment_method,
+          address_title: profile?.address_title,
+          city: profile?.city,
+          district: profile?.district,
+          neighborhood: profile?.neighborhood,
+          postal_code: profile?.postal_code,
         })
         .eq("id", user.id);
 
@@ -117,17 +125,23 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <Navbar />
-      <main className="container mx-auto px-4 py-8 max-w-3xl">
-        <h1 className="text-3xl font-bold mb-8">Profilim</h1>
+      <main className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-4xl font-bold">Profilim</h1>
+          <Button variant="outline" onClick={handleLogout}>
+            Çıkış Yap
+          </Button>
+        </div>
 
-        {/* Personal Info */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <User className="h-5 w-5 mr-2" />
-              Kişisel Bilgiler
-            </CardTitle>
-          </CardHeader>
+        <div className="grid md:grid-cols-2 gap-6 mb-6">
+          {/* Personal Info */}
+          <Card className="md:col-span-2">
+            <CardHeader>
+              <CardTitle className="flex items-center text-xl">
+                <User className="h-5 w-5 mr-2" />
+                Kişisel Bilgiler
+              </CardTitle>
+            </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -154,16 +168,16 @@ const Profile = () => {
               <Input value={email} disabled />
             </div>
           </CardContent>
-        </Card>
+          </Card>
 
-        {/* Phone */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Phone className="h-5 w-5 mr-2" />
-              Telefon
-            </CardTitle>
-          </CardHeader>
+          {/* Phone */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center text-xl">
+                <Phone className="h-5 w-5 mr-2" />
+                İletişim
+              </CardTitle>
+            </CardHeader>
           <CardContent>
             <Label>Cep Telefonu</Label>
             <Input
@@ -180,74 +194,88 @@ const Profile = () => {
               </p>
             )}
           </CardContent>
-        </Card>
+          </Card>
+        </div>
 
         {/* Address */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="flex items-center">
+            <CardTitle className="flex items-center text-xl">
               <MapPin className="h-5 w-5 mr-2" />
-              Adres
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Label>Teslimat Adresi</Label>
-            <Textarea
-              value={profile?.address || ""}
-              onChange={(e) =>
-                setProfile({ ...profile!, address: e.target.value })
-              }
-              placeholder="Adresinizi girin..."
-              rows={3}
-            />
-          </CardContent>
-        </Card>
-
-        {/* Payment Method */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <CreditCard className="h-5 w-5 mr-2" />
-              Ödeme Yöntemi
+              Adres Bilgileri
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label>Kart Numarası (Son 4 Hane)</Label>
+              <Label>Adres Başlığı</Label>
               <Input
-                value={profile?.payment_method?.last_four || ""}
+                value={profile?.address_title || ""}
                 onChange={(e) =>
-                  setProfile({
-                    ...profile!,
-                    payment_method: {
-                      ...profile?.payment_method,
-                      last_four: e.target.value,
-                    },
-                  })
+                  setProfile({ ...profile!, address_title: e.target.value })
                 }
-                placeholder="XXXX"
-                maxLength={4}
+                placeholder="Ev, İş, vb."
               />
             </div>
-            {profile?.payment_method?.last_four && (
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() =>
-                  setProfile({ ...profile!, payment_method: null })
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>İl</Label>
+                <Input
+                  value={profile?.city || ""}
+                  onChange={(e) =>
+                    setProfile({ ...profile!, city: e.target.value })
+                  }
+                  placeholder="İl"
+                />
+              </div>
+              <div>
+                <Label>İlçe</Label>
+                <Input
+                  value={profile?.district || ""}
+                  onChange={(e) =>
+                    setProfile({ ...profile!, district: e.target.value })
+                  }
+                  placeholder="İlçe"
+                />
+              </div>
+            </div>
+            <div>
+              <Label>Mahalle</Label>
+              <Input
+                value={profile?.neighborhood || ""}
+                onChange={(e) =>
+                  setProfile({ ...profile!, neighborhood: e.target.value })
                 }
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Ödeme Yöntemini Sil
-              </Button>
-            )}
+                placeholder="Mahalle"
+              />
+            </div>
+            <div>
+              <Label>Açık Adres</Label>
+              <Textarea
+                value={profile?.address || ""}
+                onChange={(e) =>
+                  setProfile({ ...profile!, address: e.target.value })
+                }
+                placeholder="Sokak, cadde, bina no, daire no..."
+                rows={3}
+              />
+            </div>
+            <div>
+              <Label>Posta Kodu</Label>
+              <Input
+                value={profile?.postal_code || ""}
+                onChange={(e) =>
+                  setProfile({ ...profile!, postal_code: e.target.value })
+                }
+                placeholder="Posta kodu"
+              />
+            </div>
           </CardContent>
         </Card>
 
         {/* Favorites */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="flex items-center">
+            <CardTitle className="flex items-center text-xl">
               <Heart className="h-5 w-5 mr-2" />
               Favorilerim
             </CardTitle>
@@ -298,16 +326,14 @@ const Profile = () => {
         </Card>
 
         {/* Actions */}
-        <div className="flex gap-4">
+        <div className="flex gap-4 justify-end">
           <Button
             onClick={handleSave}
             disabled={saving}
-            className="gradient-hero border-0"
+            size="lg"
+            className="gradient-hero border-0 px-8"
           >
-            {saving ? "Kaydediliyor..." : "Kaydet"}
-          </Button>
-          <Button variant="outline" onClick={handleLogout}>
-            Çıkış Yap
+            {saving ? "Kaydediliyor..." : "Değişiklikleri Kaydet"}
           </Button>
         </div>
       </main>

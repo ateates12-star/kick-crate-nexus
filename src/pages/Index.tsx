@@ -5,6 +5,7 @@ import HeroSlider from "@/components/HeroSlider";
 import ProductCard from "@/components/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
 interface Product {
@@ -113,14 +114,20 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         {/* Hero Slider */}
-        <section className="mb-12">
+        <section className="mb-16">
           <HeroSlider />
         </section>
 
         {/* Featured Products Section */}
-        <section className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-bold">Öne Çıkan Ürünler</h2>
+        <section className="mb-16">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-4xl font-bold mb-2">Öne Çıkan Ürünler</h2>
+              <p className="text-muted-foreground">En beğenilen ve trend ürünlerimizi keşfedin</p>
+            </div>
+            <Link to="/products">
+              <Button variant="outline">Tümünü Gör</Button>
+            </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {isLoading ? (
@@ -155,15 +162,18 @@ const Index = () => {
         </section>
 
         {/* Brands Section */}
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-bold">Markalar</h2>
+        <section className="mb-16">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-4xl font-bold mb-2">Markalar</h2>
+              <p className="text-muted-foreground">Sevdiğiniz markaları keşfedin</p>
+            </div>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 justify-items-center">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
             {brands.map((brand) => (
               <Card
                 key={brand.id}
-                className="cursor-pointer hover:shadow-hover transition-smooth group"
+                className="cursor-pointer hover:shadow-hover transition-smooth group mx-auto w-full"
                 onClick={() => handleBrandClick(brand.id)}
               >
                 <CardContent className="p-6 flex flex-col items-center justify-center aspect-square">
