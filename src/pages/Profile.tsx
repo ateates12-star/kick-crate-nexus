@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { User, Phone, MapPin, CreditCard, Trash2 } from "lucide-react";
+import { useFavorites } from "@/hooks/useFavorites";
+import { User, Phone, MapPin, CreditCard, Trash2, Heart } from "lucide-react";
 
 interface Profile {
   first_name: string | null;
@@ -25,6 +26,7 @@ const Profile = () => {
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { items: favoriteItems, removeFromFavorites } = useFavorites();
 
   useEffect(() => {
     fetchProfile();
@@ -238,6 +240,59 @@ const Profile = () => {
                 <Trash2 className="h-4 w-4 mr-2" />
                 Ödeme Yöntemini Sil
               </Button>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Favorites */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Heart className="h-5 w-5 mr-2" />
+              Favorilerim
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {favoriteItems.length === 0 ? (
+              <p className="text-center text-muted-foreground py-4">
+                Henüz favori ürününüz yok.
+              </p>
+            ) : (
+              <div className="space-y-4">
+                {favoriteItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center gap-4 p-4 border rounded-lg"
+                  >
+                    <img
+                      src={
+                        item.products.product_images.find(
+                          (img) => img.is_primary
+                        )?.image_url || item.products.product_images[0]?.image_url
+                      }
+                      alt={item.products.name}
+                      className="w-20 h-20 object-cover rounded"
+                    />
+                    <div className="flex-1">
+                      <Link to={`/product/${item.product_id}`}>
+                        <h4 className="font-semibold hover:underline">
+                          {item.products.name}
+                        </h4>
+                      </Link>
+                      <p className="text-lg font-bold mt-1">
+                        ₺{item.products.price.toLocaleString("tr-TR")}
+                      </p>
+                    </div>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeFromFavorites(item.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
             )}
           </CardContent>
         </Card>
