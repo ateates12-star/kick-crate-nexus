@@ -44,16 +44,16 @@ const Favorites = () => {
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {items.map((item) => {
-            const primaryImage = item.products.product_images.find(
-              (img) => img.is_primary
-            );
             return (
               <Card key={item.id} className="group overflow-hidden">
                 <Link to={`/product/${item.product_id}`}>
                   <div className="aspect-square overflow-hidden">
                     <img
                       src={
-                        primaryImage?.image_url ||
+                        item.products.product_images?.find(
+                          (img) => img.is_primary
+                        )?.image_url ||
+                        item.products.product_images?.[0]?.image_url ||
                         "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
                       }
                       alt={item.products.name}

@@ -163,18 +163,16 @@ const Index = () => {
 
         {/* Brands Section */}
         <section className="mb-16">
-          <div className="flex items-center justify-center mb-8">
-            <div className="text-center">
-              <h2 className="text-4xl font-bold mb-2">Markalar</h2>
-              <p className="text-muted-foreground">Sevdiğiniz markaları keşfedin</p>
-            </div>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-3 gradient-hero bg-clip-text text-transparent">Markalar</h2>
+            <p className="text-muted-foreground text-lg">Sevdiğiniz markaları keşfedin</p>
           </div>
           <div className="flex justify-center">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 max-w-5xl w-full justify-items-center">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6 max-w-6xl w-full">
               {brands.map((brand) => (
                 <Card
                   key={brand.id}
-                  className="cursor-pointer hover:shadow-hover transition-smooth group w-full max-w-[140px]"
+                  className="cursor-pointer hover:shadow-elegant hover:scale-105 transition-smooth group w-full backdrop-blur-sm bg-card/50"
                   onClick={() => handleBrandClick(brand.id)}
                 >
                   <CardContent className="p-6 flex flex-col items-center justify-center aspect-square">
@@ -182,16 +180,16 @@ const Index = () => {
                       <img
                         src={brand.logo_url}
                         alt={brand.name}
-                        className="h-16 w-16 object-contain mb-3 group-hover:scale-110 transition-smooth"
+                        className="h-16 w-16 object-contain mb-3 group-hover:scale-110 transition-smooth filter group-hover:brightness-110"
                       />
                     ) : (
-                      <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mb-3">
-                        <span className="text-2xl font-bold text-muted-foreground">
+                      <div className="h-16 w-16 bg-gradient-primary rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-smooth">
+                        <span className="text-2xl font-bold text-white">
                           {brand.name.charAt(0)}
                         </span>
                       </div>
                     )}
-                    <h3 className="font-semibold text-center">{brand.name}</h3>
+                    <h3 className="font-semibold text-center text-sm group-hover:text-primary transition-colors">{brand.name}</h3>
                   </CardContent>
                 </Card>
               ))}
