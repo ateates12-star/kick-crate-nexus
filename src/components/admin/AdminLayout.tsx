@@ -59,42 +59,44 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      <div className="flex">
+      <div className="flex flex-col lg:flex-row">
         {/* Sidebar */}
-        <aside className="w-64 min-h-screen bg-background border-r p-4">
+        <aside className="lg:w-64 w-full bg-background border-b lg:border-r lg:border-b-0 p-4 lg:min-h-screen">
           <div className="mb-8">
-            <h1 className="text-2xl font-bold gradient-hero bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold text-primary">
               Admin Panel
             </h1>
           </div>
-          <nav className="space-y-2">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
-              return (
-                <Link key={item.path} to={item.path}>
-                  <Button
-                    variant={isActive ? "default" : "ghost"}
-                    className={`w-full justify-start ${
-                      isActive ? "gradient-hero border-0" : ""
-                    }`}
-                  >
-                    <Icon className="h-5 w-5 mr-2" />
-                    {item.label}
-                  </Button>
-                </Link>
-              );
-            })}
-            <Link to="/">
-              <Button variant="ghost" className="w-full justify-start mt-4">
-                Ana Sayfaya Dön
-              </Button>
-            </Link>
+          <nav className="space-y-2 overflow-x-auto lg:overflow-visible">
+            <div className="flex lg:flex-col gap-2 pb-2 lg:pb-0">
+              {menuItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link key={item.path} to={item.path}>
+                    <Button
+                      variant={isActive ? "default" : "ghost"}
+                      className={`w-full justify-start whitespace-nowrap ${
+                        isActive ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""
+                      }`}
+                    >
+                      <Icon className="h-5 w-5 mr-2" />
+                      <span className="hidden sm:inline">{item.label}</span>
+                    </Button>
+                  </Link>
+                );
+              })}
+              <Link to="/">
+                <Button variant="ghost" className="w-full justify-start mt-4 whitespace-nowrap">
+                  Ana Sayfaya Dön
+                </Button>
+              </Link>
+            </div>
           </nav>
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-8">{children}</main>
+        <main className="flex-1 p-4 lg:p-8 overflow-x-hidden">{children}</main>
       </div>
     </div>
   );

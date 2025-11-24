@@ -103,12 +103,12 @@ const FAQ = () => {
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <Navbar />
-      <main className="container mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4 text-foreground">
+      <main className="container mx-auto px-4 py-8 sm:py-12">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-foreground">
             Sık Sorulan Sorular
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
             Aklınıza takılan soruların cevaplarını burada bulabilirsiniz.
           </p>
         </div>
