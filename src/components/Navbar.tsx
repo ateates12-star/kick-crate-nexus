@@ -311,6 +311,11 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-border animate-fade-in">
             <div className="space-y-4">
+              <Link to="/products" onClick={() => setIsMenuOpen(false)}>
+                <Button variant="ghost" className="w-full">
+                  Tüm Ürünler
+                </Button>
+              </Link>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
