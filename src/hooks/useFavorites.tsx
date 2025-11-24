@@ -29,11 +29,14 @@ export const useFavorites = () => {
           schema: "public",
           table: "favorites",
         },
-        () => {
+        (payload) => {
+          console.log("Favorites changed:", payload);
           fetchFavorites();
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log("Favorites subscription status:", status);
+      });
 
     return () => {
       supabase.removeChannel(channel);
