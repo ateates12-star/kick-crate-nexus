@@ -135,51 +135,53 @@ const Profile = () => {
 
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           {/* Personal Info */}
-          <Card className="md:col-span-2">
+          <Card className="backdrop-blur-sm bg-card/95 shadow-elegant border-border/60">
             <CardHeader>
               <CardTitle className="flex items-center text-xl">
-                <User className="h-5 w-5 mr-2" />
+                <User className="h-5 w-5 mr-2 text-primary" />
                 Kişisel Bilgiler
               </CardTitle>
             </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Ad</Label>
+                <Label>Adınız</Label>
                 <Input
                   value={profile?.first_name || ""}
                   onChange={(e) =>
                     setProfile({ ...profile!, first_name: e.target.value })
                   }
+                  placeholder="Adınızı giriniz"
                 />
               </div>
               <div>
-                <Label>Soyad</Label>
+                <Label>Soyadınız</Label>
                 <Input
                   value={profile?.last_name || ""}
                   onChange={(e) =>
                     setProfile({ ...profile!, last_name: e.target.value })
                   }
+                  placeholder="Soyadınızı giriniz"
                 />
               </div>
             </div>
             <div>
-              <Label>E-posta</Label>
-              <Input value={email} disabled />
+              <Label>E-posta Adresi</Label>
+              <Input value={email} disabled className="bg-muted" />
             </div>
           </CardContent>
           </Card>
 
           {/* Phone */}
-          <Card>
+          <Card className="backdrop-blur-sm bg-card/95 shadow-elegant border-border/60">
             <CardHeader>
               <CardTitle className="flex items-center text-xl">
-                <Phone className="h-5 w-5 mr-2" />
-                İletişim
+                <Phone className="h-5 w-5 mr-2 text-primary" />
+                İletişim Bilgileri
               </CardTitle>
             </CardHeader>
           <CardContent>
-            <Label>Cep Telefonu</Label>
+            <Label>Telefon Numarası</Label>
             <Input
               value={profile?.phone || ""}
               onChange={(e) =>
@@ -187,10 +189,15 @@ const Profile = () => {
               }
               placeholder="05XX XXX XX XX"
               disabled={!!profile?.phone}
+              className={profile?.phone ? "bg-muted" : ""}
             />
-            {profile?.phone && (
+            {profile?.phone ? (
               <p className="text-sm text-muted-foreground mt-2">
-                Telefon numaranız eklendiğinde değiştirilemez.
+                ✓ Telefon numaranız kayıtlıdır
+              </p>
+            ) : (
+              <p className="text-sm text-muted-foreground mt-2">
+                Lütfen telefon numaranızı ekleyiniz
               </p>
             )}
           </CardContent>
@@ -198,11 +205,11 @@ const Profile = () => {
         </div>
 
         {/* Address */}
-        <Card className="mb-6">
+        <Card className="mb-6 backdrop-blur-sm bg-card/95 shadow-elegant border-border/60">
           <CardHeader>
             <CardTitle className="flex items-center text-xl">
-              <MapPin className="h-5 w-5 mr-2" />
-              Adres Bilgileri
+              <MapPin className="h-5 w-5 mr-2 text-primary" />
+              Teslimat Adresi
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -273,11 +280,11 @@ const Profile = () => {
         </Card>
 
         {/* Favorites */}
-        <Card className="mb-6">
+        <Card className="mb-6 backdrop-blur-sm bg-card/95 shadow-elegant border-border/60">
           <CardHeader>
             <CardTitle className="flex items-center text-xl">
-              <Heart className="h-5 w-5 mr-2" />
-              Favorilerim
+              <Heart className="h-5 w-5 mr-2 text-primary" />
+              Favori Ürünlerim
             </CardTitle>
           </CardHeader>
           <CardContent>
