@@ -245,15 +245,24 @@ const Users = () => {
                     <p className="text-sm text-muted-foreground">
                       Kayıt: {new Date(user.created_at).toLocaleDateString("tr-TR")}
                     </p>
-                    {user.last_active_at && (
-                      <p className="text-sm text-muted-foreground">
-                        Son Aktif: {
-                          Date.now() - new Date(user.last_active_at).getTime() < 5 * 60 * 1000
-                            ? "Çevrimiçi"
-                            : new Date(user.last_active_at).toLocaleString("tr-TR")
-                        }
-                      </p>
-                    )}
+                    <div className="mt-2">
+                      {user.last_active_at && 
+                        Date.now() - new Date(user.last_active_at).getTime() < 5 * 60 * 1000 ? (
+                          <Badge className="bg-green-500 hover:bg-green-600 text-white">
+                            🟢 Çevrimiçi
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="bg-muted">
+                            ⚫ Çevrimdışı
+                            {user.last_active_at && (
+                              <span className="ml-1 text-xs">
+                                • {new Date(user.last_active_at).toLocaleDateString("tr-TR")}
+                              </span>
+                            )}
+                          </Badge>
+                        )
+                      }
+                    </div>
                   </div>
                   <div className="flex items-center gap-2 flex-wrap justify-end">
                     <Badge variant={roles[user.id] === "admin" ? "default" : "secondary"}>

@@ -46,46 +46,48 @@ const Favorites = () => {
           {items.map((item) => {
             return (
               <Card key={item.id} className="group overflow-hidden">
-                <Link to={`/product/${item.product_id}`}>
-                  <div className="aspect-square overflow-hidden">
-                    <img
-                      src={
-                        item.products.product_images?.find(
-                          (img) => img.is_primary
-                        )?.image_url ||
-                        item.products.product_images?.[0]?.image_url ||
-                        "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
-                      }
-                      alt={item.products.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
-                </Link>
-                <CardContent className="p-4">
-                  <Link to={`/product/${item.product_id}`}>
-                    <h3 className="font-semibold mb-2 hover:text-primary transition-colors">
-                      {item.products.name}
-                    </h3>
+                <CardContent className="p-0">
+                  <Link to={`/product/${item.product_id}`} className="block">
+                    <div className="aspect-square overflow-hidden">
+                      <img
+                        src={
+                          item.products.product_images?.find(
+                            (img) => img.is_primary
+                          )?.image_url ||
+                          item.products.product_images?.[0]?.image_url ||
+                          "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
+                        }
+                        alt={item.products.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
                   </Link>
-                  <p className="text-lg font-bold mb-3 gradient-hero bg-clip-text text-transparent">
-                    ₺{item.products.price.toLocaleString("tr-TR", {
-                      minimumFractionDigits: 2,
-                    })}
-                  </p>
-                  <div className="flex gap-2">
-                    <Link to={`/product/${item.product_id}`} className="flex-1">
-                      <Button size="sm" className="w-full gradient-hero border-0">
-                        <ShoppingCart className="h-4 w-4 mr-2" />
-                        Sepete Ekle
-                      </Button>
+                  <div className="p-4">
+                    <Link to={`/product/${item.product_id}`}>
+                      <h3 className="font-semibold mb-2 hover:text-primary transition-colors">
+                        {item.products.name}
+                      </h3>
                     </Link>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => removeFromFavorites(item.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <p className="text-lg font-bold mb-3 gradient-hero bg-clip-text text-transparent">
+                      ₺{item.products.price.toLocaleString("tr-TR", {
+                        minimumFractionDigits: 2,
+                      })}
+                    </p>
+                    <div className="flex gap-2">
+                      <Link to={`/product/${item.product_id}`} className="flex-1">
+                        <Button size="sm" className="w-full gradient-hero border-0">
+                          <ShoppingCart className="h-4 w-4 mr-2" />
+                          Sepete Ekle
+                        </Button>
+                      </Link>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => removeFromFavorites(item.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
