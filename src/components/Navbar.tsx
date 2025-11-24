@@ -339,21 +339,32 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                           <Card key={item.id}>
                             <CardContent className="p-4">
                               <div className="flex gap-4">
-                                <img
-                                  src={
-                                    item.products.product_images?.find(
-                                      (img) => img.is_primary
-                                    )?.image_url ||
-                                    item.products.product_images?.[0]?.image_url ||
-                                    "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
-                                  }
-                                  alt={item.products.name}
-                                  className="w-20 h-20 object-cover rounded"
-                                />
+                                <Link 
+                                  to={`/product/${item.product_id}`} 
+                                  onClick={() => setCartSheetOpen(false)}
+                                  className="shrink-0"
+                                >
+                                  <img
+                                    src={
+                                      item.products.product_images?.find(
+                                        (img) => img.is_primary
+                                      )?.image_url ||
+                                      item.products.product_images?.[0]?.image_url ||
+                                      "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
+                                    }
+                                    alt={item.products.name}
+                                    className="w-20 h-20 object-cover rounded hover:opacity-80 transition-opacity cursor-pointer"
+                                  />
+                                </Link>
                                 <div className="flex-1">
-                                  <h4 className="font-semibold">
-                                    {item.products.name}
-                                  </h4>
+                                  <Link 
+                                    to={`/product/${item.product_id}`} 
+                                    onClick={() => setCartSheetOpen(false)}
+                                  >
+                                    <h4 className="font-semibold hover:text-primary transition-colors cursor-pointer">
+                                      {item.products.name}
+                                    </h4>
+                                  </Link>
                                   <p className="text-sm text-muted-foreground">
                                     Beden: {item.size}
                                   </p>
@@ -431,21 +442,32 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                         <Card key={item.id}>
                           <CardContent className="p-4">
                             <div className="flex gap-4">
-                              <img
-                                src={
-                                  item.products.product_images?.find(
-                                    (img) => img.is_primary
-                                  )?.image_url ||
-                                  item.products.product_images?.[0]?.image_url ||
-                                  "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
-                                }
-                                alt={item.products.name}
-                                className="w-20 h-20 object-cover rounded"
-                              />
+                              <Link 
+                                to={`/product/${item.product_id}`} 
+                                onClick={() => setCartSheetOpen(false)}
+                                className="shrink-0"
+                              >
+                                <img
+                                  src={
+                                    item.products.product_images?.find(
+                                      (img) => img.is_primary
+                                    )?.image_url ||
+                                    item.products.product_images?.[0]?.image_url ||
+                                    "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
+                                  }
+                                  alt={item.products.name}
+                                  className="w-20 h-20 object-cover rounded hover:opacity-80 transition-opacity cursor-pointer"
+                                />
+                              </Link>
                               <div className="flex-1">
-                                <h4 className="font-semibold">
-                                  {item.products.name}
-                                </h4>
+                                <Link 
+                                  to={`/product/${item.product_id}`} 
+                                  onClick={() => setCartSheetOpen(false)}
+                                >
+                                  <h4 className="font-semibold hover:text-primary transition-colors cursor-pointer">
+                                    {item.products.name}
+                                  </h4>
+                                </Link>
                                 <p className="font-semibold mt-1">
                                   ₺{item.products.price.toLocaleString("tr-TR")}
                                 </p>

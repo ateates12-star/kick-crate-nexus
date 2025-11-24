@@ -256,7 +256,13 @@ const Users = () => {
                             ⚫ Çevrimdışı
                             {user.last_active_at && (
                               <span className="ml-1 text-xs">
-                                • {new Date(user.last_active_at).toLocaleDateString("tr-TR")}
+                                • {new Date(user.last_active_at).toLocaleString("tr-TR", {
+                                  day: "2-digit",
+                                  month: "2-digit", 
+                                  year: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit"
+                                })}
                               </span>
                             )}
                           </Badge>
