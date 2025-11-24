@@ -126,7 +126,7 @@ const FAQ = () => {
                 <Accordion type="single" collapsible className="w-full">
                   {category.questions.map((faq, qIdx) => (
                     <AccordionItem key={qIdx} value={`item-${idx}-${qIdx}`}>
-                      <AccordionTrigger className="text-left hover:text-primary transition-colors">
+                      <AccordionTrigger className="text-left text-foreground hover:text-primary transition-colors">
                         {faq.q}
                       </AccordionTrigger>
                       <AccordionContent className="text-muted-foreground">
