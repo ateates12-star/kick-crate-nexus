@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,21 @@ const Auth = () => {
   const [signUpPassword, setSignUpPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [captchaQuestion, setCaptchaQuestion] = useState("");
+  const [captchaAnswer, setCaptchaAnswer] = useState<number | null>(null);
+  const [captchaInput, setCaptchaInput] = useState("");
+
+  useEffect(() => {
+    generateCaptcha();
+  }, []);
+
+  const generateCaptcha = () => {
+    const a = Math.floor(Math.random() * 9) + 1;
+    const b = Math.floor(Math.random() * 9) + 1;
+    setCaptchaQuestion(`${a} + ${b} = ?`);
+    setCaptchaAnswer(a + b);
+    setCaptchaInput("");
+  };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,6 +104,17 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
+      if (!captchaInput || captchaAnswer === null || parseInt(captchaInput, 10) !== captchaAnswer) {
+        toast({
+          title: "Güvenlik doğrulaması hatalı",
+          description: "Lütfen doğrulama sorusunu doğru yanıtlayın.",
+          variant: "destructive",
+        });
+        generateCaptcha();
+        setIsLoading(false);
+        return;
+      }
+
       const { error } = await supabase.auth.signUp({
         email: signUpEmail,
         password: signUpPassword,
@@ -107,6 +133,7 @@ const Auth = () => {
         title: "Kayıt başarılı!",
         description: "Hesabınız oluşturuldu. Giriş yapabilirsiniz.",
       });
+      generateCaptcha();
     } catch (error: any) {
       const errorMessages: Record<string, string> = {
         "User already registered": "Bu e-posta adresi zaten kayıtlı",
@@ -121,6 +148,7 @@ const Auth = () => {
         description: errorMessages[error.message] || "Kayıt olurken bir hata oluştu",
         variant: "destructive",
       });
+      generateCaptcha();
     } finally {
       setIsLoading(false);
     }
@@ -229,6 +257,19 @@ const Auth = () => {
                     onChange={(e) => setSignUpPassword(e.target.value)}
                     required
                     minLength={6}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Güvenlik Doğrulaması</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Lütfen şu soruyu yanıtlayın: <span className="font-semibold">{captchaQuestion}</span>
+                  </p>
+                  <Input
+                    type="text"
+                    value={captchaInput}
+                    onChange={(e) => setCaptchaInput(e.target.value)}
+                    placeholder="Cevabınızı yazın"
+                    required
                   />
                 </div>
                 <Button

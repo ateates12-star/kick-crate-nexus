@@ -83,12 +83,19 @@ const Users = () => {
 
   const handleRoleChange = async (userId: string, newRole: "admin" | "user" | "banned") => {
     try {
-      const { error } = await supabase
+      // Önce kullanıcının tüm rollerini sil, sonra yeni rolü ekle
+      const { error: deleteError } = await supabase
         .from("user_roles")
-        .update({ role: newRole })
+        .delete()
         .eq("user_id", userId);
 
-      if (error) throw error;
+      if (deleteError) throw deleteError;
+
+      const { error: insertError } = await supabase
+        .from("user_roles")
+        .insert({ user_id: userId, role: newRole });
+
+      if (insertError) throw insertError;
 
       toast({
         title: "Başarılı",
