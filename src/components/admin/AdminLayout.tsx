@@ -61,34 +61,40 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     <div className="min-h-screen bg-gradient-subtle">
       <div className="flex flex-col lg:flex-row">
         {/* Sidebar */}
-        <aside className="lg:w-64 w-full bg-background border-b lg:border-r lg:border-b-0 p-4 lg:min-h-screen">
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold text-primary">
+        <aside className="lg:w-64 w-full bg-background border-b lg:border-r lg:border-b-0 p-3 sm:p-4 lg:min-h-screen sticky top-0 z-40 lg:static">
+          <div className="mb-4 lg:mb-8">
+            <h1 className="text-xl sm:text-2xl font-bold text-primary">
               Admin Panel
             </h1>
           </div>
-          <nav className="space-y-2 overflow-x-auto lg:overflow-visible">
-            <div className="flex lg:flex-col gap-2 pb-2 lg:pb-0">
+          <nav className="overflow-x-auto lg:overflow-visible">
+            <div className="flex lg:flex-col gap-1.5 sm:gap-2 pb-2 lg:pb-0 min-w-max lg:min-w-0">
               {menuItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
                 return (
-                  <Link key={item.path} to={item.path}>
+                  <Link key={item.path} to={item.path} className="shrink-0 lg:w-full">
                     <Button
                       variant={isActive ? "default" : "ghost"}
-                      className={`w-full justify-start whitespace-nowrap ${
+                      size="sm"
+                      className={`justify-start whitespace-nowrap w-full ${
                         isActive ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""
                       }`}
                     >
-                      <Icon className="h-5 w-5 mr-2" />
-                      <span className="hidden sm:inline">{item.label}</span>
+                      <Icon className="h-4 w-4 sm:h-5 sm:w-5 lg:mr-2" />
+                      <span className="hidden lg:inline ml-2">{item.label}</span>
                     </Button>
                   </Link>
                 );
               })}
-              <Link to="/">
-                <Button variant="ghost" className="w-full justify-start mt-4 whitespace-nowrap">
-                  Ana Sayfaya Dön
+              <Link to="/" className="shrink-0 lg:w-full">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="justify-start mt-2 lg:mt-4 whitespace-nowrap w-full"
+                >
+                  <span className="hidden lg:inline">Ana Sayfaya Dön</span>
+                  <span className="lg:hidden">Ana Sayfa</span>
                 </Button>
               </Link>
             </div>
@@ -96,7 +102,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-4 lg:p-8 overflow-x-hidden">{children}</main>
+        <main className="flex-1 p-3 sm:p-4 lg:p-8 overflow-x-hidden">{children}</main>
       </div>
     </div>
   );

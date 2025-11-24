@@ -224,9 +224,9 @@ const Users = () => {
 
   return (
     <AdminLayout>
-      <h1 className="text-3xl font-bold mb-8">Kullanıcı Yönetimi</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Kullanıcı Yönetimi</h1>
 
-      <div className="grid gap-4">
+      <div className="grid gap-3 sm:gap-4">
         {users.length === 0 ? (
           <Card>
             <CardContent className="p-8 text-center">
@@ -236,20 +236,20 @@ const Users = () => {
         ) : (
           users.map((user) => (
             <Card key={user.id}>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-lg">
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:justify-between">
+                  <div className="flex-1 w-full sm:w-auto">
+                    <h3 className="font-semibold text-base sm:text-lg">
                       {user.first_name && user.last_name
                         ? `${user.first_name} ${user.last_name}`
                         : "İsimsiz Kullanıcı"}
                     </h3>
                     {user.email && (
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs sm:text-sm text-muted-foreground break-all">
                         {user.email}
                       </p>
                     )}
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       Kayıt: {new Date(user.created_at).toLocaleDateString("tr-TR")}
                     </p>
                     <div className="mt-2">
@@ -277,7 +277,7 @@ const Users = () => {
                       }
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 flex-wrap justify-end">
+                  <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap w-full sm:w-auto justify-start sm:justify-end">
                     <Badge 
                       variant={
                         roles[user.id] === "admin" 
@@ -297,7 +297,7 @@ const Users = () => {
                       value={roles[user.id] || "user"}
                       onValueChange={(value) => handleRoleChange(user.id, value as "admin" | "user" | "banned")}
                     >
-                      <SelectTrigger className="w-32">
+                      <SelectTrigger className="w-24 sm:w-32 text-xs sm:text-sm">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>

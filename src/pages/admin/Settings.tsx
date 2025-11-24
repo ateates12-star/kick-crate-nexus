@@ -134,9 +134,9 @@ const Settings = () => {
 
   return (
     <AdminLayout>
-      <h1 className="text-3xl font-bold mb-8">Site Ayarları</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Site Ayarları</h1>
 
-      <div className="max-w-2xl">
+      <div className="max-w-2xl w-full">
         <Card>
           <CardHeader>
             <CardTitle>Site Logosu</CardTitle>
