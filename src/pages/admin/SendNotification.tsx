@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Trash2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -21,8 +23,18 @@ interface User {
   last_name: string | null;
 }
 
+interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  type: string;
+  created_at: string;
+  user_id: string | null;
+}
+
 const SendNotification = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [selectedUser, setSelectedUser] = useState<string>("all");
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
@@ -32,6 +44,7 @@ const SendNotification = () => {
 
   useEffect(() => {
     fetchUsers();
+    fetchNotifications();
   }, []);
 
   const fetchUsers = async () => {
@@ -44,6 +57,20 @@ const SendNotification = () => {
       setUsers(data || []);
     } catch (error) {
       console.error("Error fetching users:", error);
+    }
+  };
+
+  const fetchNotifications = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("notifications")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setNotifications(data || []);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
     }
   };
 
@@ -93,6 +120,7 @@ const SendNotification = () => {
       setMessage("");
       setSelectedUser("all");
       setType("bilgi");
+      fetchNotifications();
     } catch (error) {
       console.error("Error sending notification:", error);
       toast({
@@ -102,6 +130,32 @@ const SendNotification = () => {
       });
     } finally {
       setSending(false);
+    }
+  };
+
+  const deleteNotification = async (id: string) => {
+    if (!confirm("Bu bildirimi silmek istediğinizden emin misiniz?")) return;
+
+    try {
+      const { error } = await supabase
+        .from("notifications")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Silindi",
+        description: "Bildirim silindi.",
+      });
+      fetchNotifications();
+    } catch (error) {
+      console.error("Error deleting notification:", error);
+      toast({
+        title: "Hata",
+        description: "Bildirim silinemedi.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -176,6 +230,53 @@ const SendNotification = () => {
           </Button>
         </CardContent>
       </Card>
+
+      <div className="mt-8">
+        <h2 className="text-2xl font-bold mb-4">Gönderilen Bildirimler</h2>
+        <div className="space-y-4">
+          {notifications.length === 0 ? (
+            <Card>
+              <CardContent className="p-8 text-center">
+                <p className="text-muted-foreground">Henüz bildirim gönderilmedi.</p>
+              </CardContent>
+            </Card>
+          ) : (
+            notifications.map((notification) => (
+              <Card key={notification.id}>
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="font-semibold">{notification.title}</h3>
+                        <Badge variant={
+                          notification.type === "önemli" ? "destructive" : 
+                          notification.type === "kampanya" ? "default" : 
+                          "secondary"
+                        }>
+                          {notification.type}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        {notification.message}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(notification.created_at).toLocaleString("tr-TR")}
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => deleteNotification(notification.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
+      </div>
     </AdminLayout>
   );
 };

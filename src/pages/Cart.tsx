@@ -50,19 +50,23 @@ const Cart = () => {
                 <Card key={item.id}>
                   <CardContent className="p-4">
                     <div className="flex flex-col sm:flex-row gap-4">
-                      <img
-                        src={
-                          item.products.product_images?.find(
-                            (img) => img.is_primary
-                          )?.image_url ||
-                          item.products.product_images?.[0]?.image_url ||
-                          "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
-                        }
-                        alt={item.products.name}
-                        className="w-full sm:w-24 h-48 sm:h-24 object-cover rounded"
-                      />
+                      <Link to={`/product/${item.product_id}`}>
+                        <img
+                          src={
+                            item.products.product_images?.find(
+                              (img) => img.is_primary
+                            )?.image_url ||
+                            item.products.product_images?.[0]?.image_url ||
+                            "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
+                          }
+                          alt={item.products.name}
+                          className="w-full sm:w-24 h-48 sm:h-24 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity"
+                        />
+                      </Link>
                       <div className="flex-1">
-                        <h3 className="font-semibold">{item.products.name}</h3>
+                        <Link to={`/product/${item.product_id}`}>
+                          <h3 className="font-semibold hover:text-primary transition-colors cursor-pointer">{item.products.name}</h3>
+                        </Link>
                         <p className="text-sm text-muted-foreground">
                           Numara: {item.size}
                         </p>
