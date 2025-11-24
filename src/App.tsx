@@ -12,6 +12,8 @@ import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import Favorites from "./pages/Favorites";
 import Notifications from "./pages/Notifications";
+import Contact from "./pages/Contact";
+import FAQ from "./pages/FAQ";
 import Admin from "./pages/Admin";
 import AdminProducts from "./pages/admin/Products";
 import Brands from "./pages/admin/Brands";
@@ -40,6 +42,8 @@ const App = () => (
             <Route path="/cart" element={<Cart />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/notifications" element={<Notifications />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/products" element={<AdminProducts />} />
             <Route path="/admin/brands" element={<Brands />} />
