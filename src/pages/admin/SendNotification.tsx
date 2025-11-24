@@ -68,7 +68,19 @@ const SendNotification = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setNotifications(data || []);
+
+      // Aynı başlık/mesaj/tip ile gönderilen bildirimleri grupla
+      const grouped: Record<string, Notification & { count: number }> = {};
+      (data || []).forEach((n: any) => {
+        const key = `${n.title}|${n.message}|${n.type}`;
+        if (!grouped[key]) {
+          grouped[key] = { ...(n as Notification), count: 1 };
+        } else {
+          grouped[key].count += 1;
+        }
+      });
+
+      setNotifications(Object.values(grouped));
     } catch (error) {
       console.error("Error fetching notifications:", error);
     }
@@ -133,20 +145,22 @@ const SendNotification = () => {
     }
   };
 
-  const deleteNotification = async (id: string) => {
-    if (!confirm("Bu bildirimi silmek istediğinizden emin misiniz?")) return;
+  const deleteNotification = async (notification: Notification) => {
+    if (!confirm("Bu bildirimi tüm kullanıcılardan silmek istediğinizden emin misiniz?")) return;
 
     try {
       const { error } = await supabase
         .from("notifications")
         .delete()
-        .eq("id", id);
+        .eq("title", notification.title)
+        .eq("message", notification.message)
+        .eq("type", notification.type);
 
       if (error) throw error;
 
       toast({
         title: "Silindi",
-        description: "Bildirim silindi.",
+        description: "Bildirim tüm kullanıcılardan silindi.",
       });
       fetchNotifications();
     } catch (error) {
@@ -248,13 +262,22 @@ const SendNotification = () => {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <h3 className="font-semibold">{notification.title}</h3>
-                        <Badge variant={
-                          notification.type === "önemli" ? "destructive" : 
-                          notification.type === "kampanya" ? "default" : 
-                          "secondary"
-                        }>
+                        <Badge
+                          variant={
+                            notification.type === "önemli"
+                              ? "destructive"
+                              : notification.type === "kampanya"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
                           {notification.type}
                         </Badge>
+                        {notification && (notification as any).count !== undefined && (
+                          <Badge variant="secondary">
+                            {(notification as any).count} alıcı
+                          </Badge>
+                        )}
                       </div>
                       <p className="text-sm text-muted-foreground mb-2">
                         {notification.message}
@@ -266,7 +289,7 @@ const SendNotification = () => {
                     <Button
                       size="sm"
                       variant="destructive"
-                      onClick={() => deleteNotification(notification.id)}
+                      onClick={() => deleteNotification(notification)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
