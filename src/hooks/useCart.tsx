@@ -23,7 +23,7 @@ export const useCart = () => {
     fetchCart();
 
     const channel = supabase
-      .channel("cart_changes")
+      .channel(`cart_changes_${Math.random()}`)
       .on(
         "postgres_changes",
         {
