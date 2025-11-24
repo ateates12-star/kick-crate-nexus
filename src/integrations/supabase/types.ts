@@ -279,6 +279,7 @@ export type Database = {
           city: string | null
           created_at: string
           district: string | null
+          email: string | null
           first_name: string | null
           id: string
           last_active_at: string | null
@@ -295,6 +296,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           district?: string | null
+          email?: string | null
           first_name?: string | null
           id: string
           last_active_at?: string | null
@@ -311,6 +313,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           district?: string | null
+          email?: string | null
           first_name?: string | null
           id?: string
           last_active_at?: string | null
@@ -454,6 +457,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      sync_profile_email: { Args: never; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "user"
