@@ -46,16 +46,16 @@ const Cart = () => {
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => {
-              const primaryImage = item.products.product_images.find(
-                (img) => img.is_primary
-              );
               return (
                 <Card key={item.id}>
                   <CardContent className="p-4">
                     <div className="flex gap-4">
                       <img
                         src={
-                          primaryImage?.image_url ||
+                          item.products.product_images?.find(
+                            (img) => img.is_primary
+                          )?.image_url ||
+                          item.products.product_images?.[0]?.image_url ||
                           "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
                         }
                         alt={item.products.name}

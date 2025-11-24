@@ -221,10 +221,11 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                               <div className="flex gap-4">
                                 <img
                                   src={
-                                    item.products.product_images.find(
+                                    item.products.product_images?.find(
                                       (img) => img.is_primary
                                     )?.image_url ||
-                                    item.products.product_images[0]?.image_url
+                                    item.products.product_images?.[0]?.image_url ||
+                                    "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
                                   }
                                   alt={item.products.name}
                                   className="w-20 h-20 object-cover rounded"
@@ -312,10 +313,11 @@ const Navbar = ({ searchQuery = "", setSearchQuery }: NavbarProps) => {
                             <div className="flex gap-4">
                               <img
                                 src={
-                                  item.products.product_images.find(
+                                  item.products.product_images?.find(
                                     (img) => img.is_primary
                                   )?.image_url ||
-                                  item.products.product_images[0]?.image_url
+                                  item.products.product_images?.[0]?.image_url ||
+                                  "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
                                 }
                                 alt={item.products.name}
                                 className="w-20 h-20 object-cover rounded"
