@@ -8,7 +8,7 @@ const Contact = () => {
       <Navbar />
       <main className="container mx-auto px-4 py-12">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4 gradient-hero bg-clip-text text-transparent animate-fade-in">
+          <h1 className="text-5xl font-bold mb-4 text-foreground animate-fade-in">
             İletişim
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -21,8 +21,8 @@ const Contact = () => {
           <Card className="backdrop-blur-sm bg-card/95 hover:shadow-elegant transition-smooth border-border/60 hover:border-primary/30">
             <CardHeader>
               <CardTitle className="flex items-center gap-3">
-                <div className="p-3 rounded-full bg-gradient-primary shadow-lg">
-                  <Mail className="h-6 w-6 text-white" />
+                <div className="p-3 rounded-full bg-primary shadow-lg">
+                  <Mail className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <span className="text-xl">E-posta</span>
               </CardTitle>
@@ -47,8 +47,8 @@ const Contact = () => {
           <Card className="backdrop-blur-sm bg-card/95 hover:shadow-elegant transition-smooth border-border/60 hover:border-primary/30">
             <CardHeader>
               <CardTitle className="flex items-center gap-3">
-                <div className="p-3 rounded-full bg-gradient-primary shadow-lg">
-                  <Phone className="h-6 w-6 text-white" />
+                <div className="p-3 rounded-full bg-primary shadow-lg">
+                  <Phone className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <span className="text-xl">Telefon</span>
               </CardTitle>
@@ -76,8 +76,8 @@ const Contact = () => {
           <Card className="backdrop-blur-sm bg-card/95 hover:shadow-elegant transition-smooth border-border/60 hover:border-primary/30">
             <CardHeader>
               <CardTitle className="flex items-center gap-3">
-                <div className="p-3 rounded-full bg-gradient-primary shadow-lg">
-                  <MapPin className="h-6 w-6 text-white" />
+                <div className="p-3 rounded-full bg-primary shadow-lg">
+                  <MapPin className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <span className="text-xl">Adres</span>
               </CardTitle>
@@ -96,8 +96,8 @@ const Contact = () => {
           <Card className="backdrop-blur-sm bg-card/95 border-border/60 md:col-span-2 lg:col-span-3">
             <CardHeader>
               <CardTitle className="flex items-center gap-3">
-                <div className="p-3 rounded-full bg-gradient-primary shadow-lg">
-                  <Clock className="h-6 w-6 text-white" />
+                <div className="p-3 rounded-full bg-primary shadow-lg">
+                  <Clock className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <span className="text-xl">Çalışma Saatleri</span>
               </CardTitle>

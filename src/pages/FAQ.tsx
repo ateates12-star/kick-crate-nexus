@@ -105,7 +105,7 @@ const FAQ = () => {
       <Navbar />
       <main className="container mx-auto px-4 py-12">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4 gradient-hero bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold mb-4 text-foreground">
             Sık Sorulan Sorular
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -120,7 +120,7 @@ const FAQ = () => {
               className="backdrop-blur-sm bg-card/50 hover:shadow-elegant transition-smooth"
             >
               <CardContent className="pt-6">
-                <h2 className="text-2xl font-bold mb-6 gradient-hero bg-clip-text text-transparent">
+                <h2 className="text-2xl font-bold mb-6 text-foreground">
                   {category.category}
                 </h2>
                 <Accordion type="single" collapsible className="w-full">

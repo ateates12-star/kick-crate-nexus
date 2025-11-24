@@ -44,7 +44,7 @@ const ProductCard = ({ id, name, price, imageUrl, brandName }: ProductCardProps)
               }`}
             />
           </Button>
-          <div className="absolute top-3 left-3 bg-primary/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-primary-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-x-2 group-hover:translate-x-0 z-20">
+          <div className="absolute top-3 left-3 bg-primary backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-primary-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-x-2 group-hover:translate-x-0 z-20 shadow-lg">
             YENİ
           </div>
         </div>
@@ -57,7 +57,7 @@ const ProductCard = ({ id, name, price, imageUrl, brandName }: ProductCardProps)
           )}
           <h3 className="font-bold text-lg mb-3 line-clamp-2 group-hover:text-primary transition-colors duration-300">{name}</h3>
           <div className="flex items-center justify-between">
-            <p className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            <p className="text-3xl font-bold text-primary">
               ₺{price.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
             </p>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-secondary/30 px-2.5 py-1.5 rounded-full">
@@ -69,7 +69,7 @@ const ProductCard = ({ id, name, price, imageUrl, brandName }: ProductCardProps)
       </CardContent>
       <CardFooter className="p-5 pt-0">
         <Link to={`/product/${id}`} className="w-full">
-          <Button className="w-full bg-secondary hover:bg-secondary/80 text-secondary-foreground border-0 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 font-semibold">
+          <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02] transition-all duration-300 font-semibold">
             Ürünü İncele
           </Button>
         </Link>
