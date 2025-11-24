@@ -52,7 +52,9 @@ const ProductCard = ({ id, name, price, imageUrl, brandName }: ProductCardProps)
         </Link>
       </CardContent>
       <CardFooter className="p-4 pt-0">
-        <Button className="w-full gradient-hero border-0">Sepete Ekle</Button>
+        <Link to={`/product/${id}`} className="w-full">
+          <Button className="w-full gradient-hero border-0">Ürünü Gör</Button>
+        </Link>
       </CardFooter>
     </Card>
   );

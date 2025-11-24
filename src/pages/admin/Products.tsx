@@ -32,6 +32,12 @@ interface Product {
   is_featured: boolean;
   brand_id: string | null;
   brands: { name: string } | null;
+  product_images?: { id: string; image_url: string; is_primary: boolean }[];
+}
+
+interface SizeStock {
+  size: string;
+  stock: number;
 }
 
 interface Brand {
@@ -55,6 +61,12 @@ const Products = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [sizes, setSizes] = useState<SizeStock[]>([
+    { size: "", stock: 0 },
+  ]);
+  const [existingImages, setExistingImages] = useState<
+    { id: string; image_url: string; is_primary: boolean }[]
+  >([]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -66,7 +78,7 @@ const Products = () => {
     try {
       const { data, error } = await supabase
         .from("products")
-        .select("*, brands(name)")
+        .select("*, brands(name), product_images(*)")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -171,6 +183,24 @@ const Products = () => {
         if (imageError) throw imageError;
       }
 
+      // Save sizes and stock
+      const validSizes = sizes.filter((s) => s.size.trim() !== "");
+      if (validSizes.length > 0) {
+        // Delete existing sizes
+        await supabase.from("product_sizes").delete().eq("product_id", productId);
+
+        // Insert new sizes
+        const { error: sizesError } = await supabase.from("product_sizes").insert(
+          validSizes.map((s) => ({
+            product_id: productId,
+            size: s.size,
+            stock: s.stock,
+          }))
+        );
+
+        if (sizesError) throw sizesError;
+      }
+
       setOpen(false);
       resetForm();
       fetchProducts();
@@ -222,7 +252,7 @@ const Products = () => {
     }
   };
 
-  const openDialog = (product?: Product) => {
+  const openDialog = async (product?: Product) => {
     if (product) {
       setEditingProduct(product);
       setFormData({
@@ -232,6 +262,23 @@ const Products = () => {
         brand_id: product.brand_id || "",
         is_featured: product.is_featured || false,
       });
+
+      // Fetch existing images
+      const { data: images } = await supabase
+        .from("product_images")
+        .select("*")
+        .eq("product_id", product.id)
+        .order("display_order");
+      setExistingImages(images || []);
+
+      // Fetch existing sizes
+      const { data: productSizes } = await supabase
+        .from("product_sizes")
+        .select("*")
+        .eq("product_id", product.id);
+      if (productSizes && productSizes.length > 0) {
+        setSizes(productSizes.map((s) => ({ size: s.size, stock: s.stock })));
+      }
     } else {
       resetForm();
     }
@@ -247,7 +294,48 @@ const Products = () => {
       brand_id: "",
       is_featured: false,
     });
+    setSizes([{ size: "", stock: 0 }]);
+    setExistingImages([]);
     clearImage();
+  };
+
+  const addSizeRow = () => {
+    setSizes([...sizes, { size: "", stock: 0 }]);
+  };
+
+  const removeSizeRow = (index: number) => {
+    setSizes(sizes.filter((_, i) => i !== index));
+  };
+
+  const updateSize = (index: number, field: "size" | "stock", value: string | number) => {
+    const newSizes = [...sizes];
+    if (field === "stock") {
+      newSizes[index].stock = Number(value);
+    } else {
+      newSizes[index].size = String(value);
+    }
+    setSizes(newSizes);
+  };
+
+  const deleteImage = async (imageId: string) => {
+    try {
+      const { error } = await supabase
+        .from("product_images")
+        .delete()
+        .eq("id", imageId);
+
+      if (error) throw error;
+
+      setExistingImages(existingImages.filter((img) => img.id !== imageId));
+      toast({ title: "Başarılı", description: "Resim silindi." });
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        title: "Hata",
+        description: "Resim silinemedi.",
+        variant: "destructive",
+      });
+    }
   };
 
   if (loading) {
@@ -338,7 +426,73 @@ const Products = () => {
                 <Label>Öne Çıkan Ürün</Label>
               </div>
               <div>
-                <Label>Ürün Resmi</Label>
+                <Label>Bedenler ve Stok</Label>
+                <div className="space-y-2 mt-2">
+                  {sizes.map((size, index) => (
+                    <div key={index} className="flex gap-2">
+                      <Input
+                        placeholder="Beden (örn: 42, M, L)"
+                        value={size.size}
+                        onChange={(e) => updateSize(index, "size", e.target.value)}
+                        className="flex-1"
+                      />
+                      <Input
+                        type="number"
+                        placeholder="Stok"
+                        value={size.stock}
+                        onChange={(e) => updateSize(index, "stock", e.target.value)}
+                        className="w-24"
+                      />
+                      {sizes.length > 1 && (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => removeSizeRow(index)}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={addSizeRow}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Beden Ekle
+                  </Button>
+                </div>
+              </div>
+              {editingProduct && existingImages.length > 0 && (
+                <div>
+                  <Label>Mevcut Resimler</Label>
+                  <div className="grid grid-cols-3 gap-2 mt-2">
+                    {existingImages.map((img) => (
+                      <div key={img.id} className="relative">
+                        <img
+                          src={img.image_url}
+                          alt="Ürün"
+                          className="h-24 w-full object-cover rounded-lg"
+                        />
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="destructive"
+                          className="absolute -top-2 -right-2"
+                          onClick={() => deleteImage(img.id)}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div>
+                <Label>Yeni Ürün Resmi Ekle</Label>
                 <div className="space-y-4 mt-2">
                   <div className="flex gap-2">
                     <div className="flex-1">
