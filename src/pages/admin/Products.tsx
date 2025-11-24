@@ -119,6 +119,15 @@ const Products = () => {
 
         if (error) throw error;
         productId = editingProduct.id;
+
+        // Delete old images before adding new ones
+        if (imageFile || imageUrl) {
+          await supabase
+            .from('product_images')
+            .delete()
+            .eq('product_id', productId);
+        }
+
         toast({ title: "Başarılı", description: "Ürün güncellendi." });
       } else {
         const { data, error } = await supabase

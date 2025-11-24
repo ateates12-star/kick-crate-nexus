@@ -2,6 +2,7 @@ import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import { useFavorites } from "@/hooks/useFavorites";
 
 interface ProductCardProps {
   id: string;
@@ -12,6 +13,7 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ id, name, price, imageUrl, brandName }: ProductCardProps) => {
+  const { isFavorite, addToFavorites } = useFavorites();
   return (
     <Card className="group overflow-hidden border-border hover:shadow-hover transition-smooth">
       <Link to={`/product/${id}`}>
@@ -27,10 +29,14 @@ const ProductCard = ({ id, name, price, imageUrl, brandName }: ProductCardProps)
             className="absolute top-2 right-2 bg-white/80 hover:bg-white dark:bg-black/80 dark:hover:bg-black"
             onClick={(e) => {
               e.preventDefault();
-              // TODO: Add to favorites
+              addToFavorites(id);
             }}
           >
-            <Heart className="h-5 w-5" />
+            <Heart
+              className={`h-5 w-5 ${
+                isFavorite(id) ? "fill-red-500 text-red-500" : ""
+              }`}
+            />
           </Button>
         </div>
       </Link>

@@ -37,6 +37,7 @@ const Index = () => {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [selectedBrand, setSelectedBrand] = useState<string>("all");
   const [priceRange, setPriceRange] = useState<number[]>([0, 10000]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -84,12 +85,16 @@ const Index = () => {
       selectedBrand === "all" || product.brand_id === selectedBrand;
     const priceMatch =
       product.price >= priceRange[0] && product.price <= priceRange[1];
-    return brandMatch && priceMatch;
+    const searchMatch =
+      searchQuery === "" ||
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.brands?.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return brandMatch && priceMatch && searchMatch;
   });
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      <Navbar />
+      <Navbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
       <main className="container mx-auto px-4 py-8">
         {/* Hero Slider */}
